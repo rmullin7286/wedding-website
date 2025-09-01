@@ -1,0 +1,125 @@
+/* Import elegant wedding fonts */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
+
+:root {
+    /* periwinkle */
+    --primary-color: rgba(119,129,171,255);
+    /* wine red */
+    --secondary-color: rgba(122,39,61,255);
+    /* sage */
+    --neutral-color: rgba(133,150,127,255);
+}
+
+/* Global font settings */
+body {
+    font-family: 'Crimson Text', serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 600;
+}
+
+.display-1, .display-2, .display-3, .display-4, .display-5, .display-6 {
+    font-family: 'Playfair Display', serif;
+}
+
+
+/* Navigation Bar Styling */
+/* Main navbar container - uses primary wedding color (periwinkle) as background */
+.wedding-navbar {
+    background-color: var(--primary-color); /* Solid periwinkle background for wedding theme */
+    box-shadow: 0 2px 15px rgba(119, 129, 171, 0.3); /* Subtle shadow using primary color for depth */
+    transition: all 0.3s ease; /* Smooth transitions for any hover/state changes */
+}
+
+/* Brand text styling - "Ryan & Shae" in navbar */
+.wedding-navbar .brand-text {
+    font-family: 'Playfair Display', serif; /* Elegant serif font for romantic feel */
+    font-size: 1.8rem; /* Large, prominent size for the couple's names */
+    font-weight: 600; /* Semi-bold weight for good visibility */
+    color: white; /* White text for contrast against periwinkle background */
+    text-decoration: none; /* Remove default link underline */
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); /* Subtle shadow for text depth */
+}
+
+/* Brand text hover effect - subtle animation when hovering over couple's names */
+.wedding-navbar .navbar-brand:hover .brand-text {
+    color: rgba(255, 255, 255, 0.9); /* Slightly transparent white on hover */
+    transform: translateY(-1px); /* Small upward movement for elegant hover effect */
+}
+
+/* Navigation links styling - Home, When & Where, RSVP links */
+.wedding-navbar .nav-link {
+    font-family: 'Crimson Text', serif; /* Readable serif font matching body text */
+    font-size: 1.1rem; /* Slightly larger than default for better readability */
+    color: rgba(255, 255, 255, 0.9) !important; /* Semi-transparent white for softer look */
+    margin: 0 0.5rem; /* Horizontal spacing between navigation items */
+    transition: all 0.3s ease; /* Smooth transitions for hover effects */
+    border-radius: 4px; /* Rounded corners for modern button-like appearance */
+    padding: 0.5rem 0.75rem !important; /* Comfortable padding for button-like clickable area */
+}
+
+/* Navigation link hover effect - transforms links into wine red buttons */
+.wedding-navbar .nav-link:hover {
+    color: white !important; /* Pure white text for maximum contrast */
+    background-color: var(--secondary-color); /* Wine red background on hover */
+    transform: translateY(-1px); /* Small upward movement matching brand hover effect */
+}
+
+/* Mobile menu toggle button (hamburger menu) styling */
+.wedding-navbar .navbar-toggler {
+    border-color: rgba(255, 255, 255, 0.3); /* Light white border for visibility */
+    padding: 0.25rem 0.5rem; /* Compact padding for mobile-friendly touch target */
+}
+
+/* Focus state for mobile menu toggle - accessibility and keyboard navigation */
+.wedding-navbar .navbar-toggler:focus {
+    box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.25); /* White focus ring for visibility */
+}
+
+/* Custom hamburger icon - white lines for visibility on dark periwinkle background */
+/* Bootstrap's default hamburger is dark, so we override with white SVG icon */
+.wedding-navbar .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.8%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+/* Homepage Hero Section - Background image with text overlay */
+.hero {
+    background: url('/static/image/cover.jpg') center center/cover no-repeat; /* Cover photo centered and scaled */
+    min-height: 100vh; /* Full viewport height for dramatic effect */
+    display: flex;
+    align-items: flex-start; /* Position content at top instead of center to avoid faces */
+    justify-content: center; /* Center horizontally */
+    text-align: center;
+    color: white; /* White text for contrast against photo */
+    position: relative;
+    padding-top: 8rem; /* Add space from navbar and position text in upper third */
+}
+
+.hero::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.4); /* overlay to make text readable */
+    z-index: 0;
+}
+
+/* Hero content container - positioned above the dark overlay */
+.hero-content {
+    position: relative;
+    z-index: 1; /* Ensure text appears above the dark overlay */
+}
+
+/* Responsive adjustments for mobile devices */
+@media (max-width: 768px) {
+    .hero {
+        padding-top: 6rem; /* Reduce top padding on smaller screens */
+    }
+}
+
+@media (max-width: 480px) {
+    .hero {
+        padding-top: 5rem; /* Further reduce for very small screens */
+    }
+}
