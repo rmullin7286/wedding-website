@@ -159,3 +159,29 @@ h1, h2, h3, h4, h5, h6 {
     border-color: var(--secondary-color); /* Wine red border on hover */
     color: var(--secondary-color); /* Wine red text on hover */
 }
+
+/* RSVP Section - Wine red background with light text */
+#rsvp {
+    background-color: var(--secondary-color); /* Wine red background */
+}
+
+#rsvp h2 {
+    color: white; /* White heading for contrast */
+}
+
+#rsvp p {
+    color: var(--light-text); /* Light text for readability */
+}
+
+#rsvp .btn {
+    background-color: var(--primary-color); /* Periwinkle button background */
+    border-color: var(--primary-color); /* Periwinkle button border */
+    color: white; /* White text */
+    font-weight: 600; /* Semi-bold button text */
+}
+
+#rsvp .btn:hover {
+    background-color: transparent; /* Transparent background on hover */
+    border-color: white; /* White border on hover */
+    color: white; /* White text on hover */
+}

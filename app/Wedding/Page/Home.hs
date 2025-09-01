@@ -7,6 +7,7 @@ home :: Html ()
 home = basePage "Home" $ do
   hero
   whenAndWhere
+  rsvpSection
 
 hero :: Html ()
 hero = do
@@ -33,3 +34,13 @@ whenAndWhere = do
           p_ [class_ "mb-3 fs-3"] "Trillium Nursery"
           p_ [class_ "text-muted fs-5 mb-3"] "8335 196th Ave NE, Redmond, WA 98053"
           a_ [href_ "https://maps.app.goo.gl/Hxt1t2ABHH3z4Wtz6", target_ "_blank", class_ "btn btn-outline-light"] "View on Google Maps"
+
+rsvpSection :: Html ()
+rsvpSection = do
+  section_ [class_ "py-5", id_ "rsvp"] $ do
+    div_ [class_ "container"] $ do
+      div_ [class_ "row justify-content-center"] $ do
+        div_ [class_ "col-lg-8 text-center py-4"] $ do
+          h2_ [class_ "h2 mb-4"] "Join Us"
+          p_ [class_ "fs-4 mb-4"] "We hope you'll join us on this special day as we celebrate our love and begin our journey together."
+          a_ [href_ "/rsvp", class_ "btn btn-lg px-5"] "RSVP"
