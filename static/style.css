@@ -8,6 +8,9 @@
     --secondary-color: rgba(122,39,61,255);
     /* sage */
     --neutral-color: rgba(133,150,127,255);
+    /* light text colors for dark backgrounds */
+    --light-text: rgba(255, 255, 255, 0.95);
+    --light-text-muted: rgba(255, 255, 255, 0.7);
 }
 
 /* Global font settings */
@@ -122,4 +125,37 @@ h1, h2, h3, h4, h5, h6 {
     .hero {
         padding-top: 5rem; /* Further reduce for very small screens */
     }
+}
+
+/* When and Where Section - Periwinkle background with light text */
+#when-where {
+    background-color: var(--primary-color) !important; /* Override Bootstrap's bg-light with periwinkle */
+}
+
+#when-where h2 {
+    color: white; /* White headings for contrast against periwinkle background */
+}
+
+#when-where .fs-3 {
+    color: var(--light-text); /* Slightly transparent white for main content */
+}
+
+#when-where .fs-5 {
+    color: var(--light-text); /* Slightly transparent white for smaller text */
+}
+
+#when-where .text-muted {
+    color: var(--light-text-muted) !important; /* Override Bootstrap's muted color with light white */
+}
+
+#when-where .btn-outline-light {
+    background-color: var(--secondary-color); /* Wine red background by default */
+    border-color: var(--secondary-color); /* Wine red border */
+    color: white; /* White text */
+}
+
+#when-where .btn-outline-light:hover {
+    background-color: transparent; /* Transparent background on hover */
+    border-color: var(--secondary-color); /* Wine red border on hover */
+    color: var(--secondary-color); /* Wine red text on hover */
 }
