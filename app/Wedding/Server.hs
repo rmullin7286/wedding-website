@@ -9,7 +9,7 @@ import Servant (Application, Proxy (Proxy), ServerT, hoistServer, serve, serveDi
 import Servant.API (FormUrlEncoded, Get, NoContent, PlainText, Post, Raw, ReqBody, (:>))
 import Servant.HTML.Lucid (HTML)
 import Wedding.Config (Config (..), DBConfig (..), loadConfig)
-import Wedding.Env (AppM, Env (..), runAppM)
+import Wedding.Env (AppM, Env, mkEnv, runAppM)
 import Wedding.Page.Home (home)
 import Wedding.Page.RSVP (RSVPFormData, rsvpNameSubmission, rsvpPage)
 import Wedding.DB (initializeDatabase)
@@ -44,7 +44,7 @@ runServer configPath = do
   conn <- initializeDatabase dbPath
 
   -- Create environment
-  let env = Env {envDbConnection = conn}
+  let env = mkEnv conn
 
   putStrLn $ "Wedding server starting on port 8080"
   putStrLn $ "Using database: " ++ dbPath
