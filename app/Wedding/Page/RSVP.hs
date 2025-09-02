@@ -2,13 +2,12 @@
 
 module Wedding.Page.RSVP (rsvpPage, rsvpNameSubmission, RSVPFormData) where
 
-import Control.Monad.IO.Class (MonadIO (liftIO))
 import Lucid (Html, action_, button_, class_, div_, for_, form_, h1_, id_, input_, label_, method_, name_, p_, placeholder_, required_, section_, type_)
 import Network.HTTP.Types (hLocation)
-import Servant (NoContent, ServerError (errHeaders), err302, throwError)
+import Servant (NoContent, ServerError (errHeaders), err302)
 import Web.FormUrlEncoded (FromForm, fromForm, parseUnique)
 import Wedding.Component.BasePage (basePage)
-import Wedding.Env (AppM, getDbConnection)
+import Wedding.Env (AppM, getDbConnection, liftIO, throwError)
 
 rsvpPage :: Html ()
 rsvpPage = basePage "RSVP" $ do
