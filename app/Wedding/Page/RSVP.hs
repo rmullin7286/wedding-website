@@ -3,11 +3,13 @@
 module Wedding.Page.RSVP (rsvpPage, rsvpNameSubmission, RSVPFormData) where
 
 import Control.Monad.IO.Class (MonadIO (liftIO))
+import Control.Monad.Reader (ask)
 import Lucid (Html, action_, button_, class_, div_, for_, form_, h1_, id_, input_, label_, method_, name_, p_, placeholder_, required_, section_, type_)
 import Network.HTTP.Types (hLocation)
-import Servant (Handler, NoContent, ServerError (errHeaders), err302, throwError)
+import Servant (NoContent, ServerError (errHeaders), err302, throwError)
 import Web.FormUrlEncoded (FromForm, fromForm, parseUnique)
 import Wedding.Component.BasePage (basePage)
+import Wedding.Env (AppM, Env (..))
 
 rsvpPage :: Html ()
 rsvpPage = basePage "RSVP" $ do
@@ -36,7 +38,13 @@ newtype RSVPFormData = RSVPFormData {guestName :: String}
 instance FromForm RSVPFormData where
   fromForm f = RSVPFormData <$> parseUnique "guestName" f
 
-rsvpNameSubmission :: RSVPFormData -> Handler NoContent
+rsvpNameSubmission :: RSVPFormData -> AppM NoContent
 rsvpNameSubmission RSVPFormData {..} = do
+  env <- ask
+  let _conn = envDbConnection env
+  
+  -- For now, just log. Later we'll use the connection for guest lookup
   liftIO $ putStrLn $ "RSVP submission from: " ++ guestName
+  liftIO $ putStrLn "Database connection available"
+  
   throwError $ err302 {errHeaders = [(hLocation, "/")]}

@@ -5,11 +5,14 @@ module Wedding.Server (runServer) where
 
 import Lucid (Html)
 import Network.Wai.Handler.Warp (run)
-import Servant (Application, Proxy (Proxy), Server, serve, serveDirectoryWebApp, (:<|>) (..))
+import Servant (Application, Proxy (Proxy), ServerT, hoistServer, serve, serveDirectoryWebApp, (:<|>) (..))
 import Servant.API (FormUrlEncoded, Get, NoContent, PlainText, Post, Raw, ReqBody, (:>))
 import Servant.HTML.Lucid (HTML)
+import Wedding.Config (Config (..), DBConfig (..), loadConfig)
+import Wedding.Env (AppM, Env (..), runAppM)
 import Wedding.Page.Home (home)
 import Wedding.Page.RSVP (RSVPFormData, rsvpNameSubmission, rsvpPage)
+import Wedding.DB (initializeDatabase)
 
 -- | API Definition
 type WeddingAPI =
@@ -18,8 +21,9 @@ type WeddingAPI =
     :<|> "rsvp" :> ReqBody '[FormUrlEncoded] RSVPFormData :> Post '[PlainText] NoContent
     :<|> "static" :> Raw
 
-server :: Server WeddingAPI
-server =
+-- | Server implemented in AppM monad
+serverAppM :: ServerT WeddingAPI AppM
+serverAppM =
   return home
     :<|> return rsvpPage
     :<|> rsvpNameSubmission
@@ -28,12 +32,20 @@ server =
 weddingAPI :: Proxy WeddingAPI
 weddingAPI = Proxy
 
-app :: Application
-app = serve weddingAPI server
+app :: Env -> Application
+app env = serve weddingAPI $ hoistServer weddingAPI (runAppM env) serverAppM
 
 runServer :: FilePath -> IO ()
-runServer configFile = do
-  -- For now, just acknowledge the config file parameter
-  -- Actual YAML loading will be implemented later
-  putStrLn $ "Server starting with config: " ++ configFile
-  run 8080 app
+runServer configPath = do
+  config <- loadConfig configPath
+  let dbPath = location $ database config
+
+  -- Open database connection
+  conn <- initializeDatabase dbPath
+
+  -- Create environment
+  let env = Env {envDbConnection = conn}
+
+  putStrLn $ "Wedding server starting on port 8080"
+  putStrLn $ "Using database: " ++ dbPath
+  run 8080 (app env)

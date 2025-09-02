@@ -53,7 +53,9 @@ executable wedding
     Wedding.CLI
     Wedding.Component.BasePage
     Wedding.Component.NavBar
+    Wedding.Config
     Wedding.DB
+    Wedding.Env
     Wedding.Html.Attributes
     Wedding.Page.Home
     Wedding.Page.RSVP
@@ -67,6 +69,7 @@ executable wedding
     http-api-data,
     http-types,
     lucid,
+    mtl,
     optparse-applicative,
     servant,
     servant-lucid,
@@ -74,6 +77,7 @@ executable wedding
     sqlite-simple,
     text,
     warp,
+    yaml,
 
   -- Directories containing source files.
   hs-source-dirs: app

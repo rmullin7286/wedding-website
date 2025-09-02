@@ -1,19 +1,21 @@
-module Wedding.CLI (Options(..), parseOptions) where
+module Wedding.CLI (Options (..), parseOptions) where
 
 import Options.Applicative
 
--- | Command line options for the wedding server
+-- | Command line options for the server
 data Options = Options
   { configFile :: FilePath
-  } deriving (Show)
+  }
+  deriving (Show)
 
 -- | Parser for the --config-file argument
 configFileParser :: Parser FilePath
-configFileParser = strOption
-  ( long "config-file"
-  <> metavar "FILE"
-  <> help "Path to the YAML configuration file"
-  )
+configFileParser =
+  strOption
+    ( long "config-file"
+        <> metavar "FILE"
+        <> help "Path to the YAML configuration file"
+    )
 
 -- | Parser for all command line options
 optionsParser :: Parser Options
@@ -23,8 +25,10 @@ optionsParser = Options <$> configFileParser
 parseOptions :: IO Options
 parseOptions = execParser opts
   where
-    opts = info (optionsParser <**> helper)
-      ( fullDesc
-      <> progDesc "Wedding website server"
-      <> header "wedding - A beautiful wedding website"
-      )
+    opts =
+      info
+        (optionsParser <**> helper)
+        ( fullDesc
+            <> progDesc "Wedding website server"
+            <> header "Wedding website - for Ryan and Shae"
+        )
