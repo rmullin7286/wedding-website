@@ -50,10 +50,13 @@ executable wedding
   main-is: Main.hs
   -- Modules included in this executable, other than Main.
   other-modules:
+    Wedding.CLI
     Wedding.Component.BasePage
     Wedding.Component.NavBar
+    Wedding.DB
     Wedding.Html.Attributes
     Wedding.Page.Home
+    Wedding.Page.RSVP
     Wedding.Server
 
   -- LANGUAGE extensions used by modules in this package.
@@ -61,10 +64,14 @@ executable wedding
   -- Other library packages from which modules are imported.
   build-depends:
     base ^>=4.18.3.0,
+    http-api-data,
+    http-types,
     lucid,
+    optparse-applicative,
     servant,
     servant-lucid,
     servant-server,
+    sqlite-simple,
     text,
     warp,
 

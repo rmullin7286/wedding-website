@@ -55,7 +55,7 @@ build_and_run() {
         fi
         
         # Start the new server in background
-        cabal run wedding &
+        cabal run wedding -- --config-file server.yaml &
         SERVER_PID=$!
         
         log $GREEN "Server started with PID: $SERVER_PID"
