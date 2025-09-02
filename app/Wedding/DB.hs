@@ -5,9 +5,15 @@ module Wedding.DB (initializeDatabase) where
 
 import Data.Text (Text)
 import Database.SQLite.Simple (Connection, execute_, open)
+import System.Directory (createDirectoryIfMissing)
+import System.FilePath (takeDirectory)
 
 initializeDatabase :: FilePath -> IO Connection
 initializeDatabase path = do
+  -- Ensure parent directory exists
+  createDirectoryIfMissing True (takeDirectory path)
+  
+  -- Open database (SQLite creates file if it doesn't exist)
   conn <- open path
   execute_ conn "PRAGMA foreign_keys = ON"
   execute_ conn "PRAGMA journal_mode = WAL"
