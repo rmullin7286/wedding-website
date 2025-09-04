@@ -1,0 +1,2 @@
+database:
+  location: "/Users/rmullin/.local/share/wedding/db.sqlite"

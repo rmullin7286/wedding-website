@@ -3,7 +3,6 @@
 
 module Wedding.DB (initializeDatabase) where
 
-import Control.Monad.RWS (MonadReader)
 import Data.Text (Text)
 import Database.SQLite.Simple (Connection, execute_, open)
 import System.Directory (createDirectoryIfMissing)
@@ -24,12 +23,6 @@ initializeDatabase path = do
   execute_ conn "CREATE TABLE IF NOT EXISTS attendees (id INTEGER PRIMARY KEY, group_id INTEGER REFERENCES groups(id), name TEXT NOT NULL, attending BOOLEAN, dietary_restrictions TEXT)"
   return conn
 
-class HasConnection a where
-  getConnection :: a -> Connection
-
-class (Monad m) => MonadDB m
-
-instance (HasConnection env, MonadReader env m) => MonadDB m
 
 data Attendee = Attendee
   { id :: Int,
