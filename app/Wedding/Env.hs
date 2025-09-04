@@ -14,7 +14,7 @@ newtype Env = Env
 
 -- | Application monad with ReaderT for dependency injection
 -- Implementation details are hidden via newtype
-newtype AppM a = AppM { unAppM :: ReaderT Env Handler a }
+newtype AppM a = AppM {unAppM :: ReaderT Env Handler a}
   deriving (Functor, Applicative, Monad, MonadIO, MonadReader Env, MonadError ServerError)
 
 -- | Create a new environment with the provided database connection

@@ -8,11 +8,9 @@ import Network.Wai.Handler.Warp (run)
 import Servant (Application, Proxy (Proxy), ServerT, hoistServer, serve, serveDirectoryWebApp, (:<|>) (..))
 import Servant.API (FormUrlEncoded, Get, NoContent, PlainText, Post, Raw, ReqBody, (:>))
 import Servant.HTML.Lucid (HTML)
-import Wedding.Config (Config (..), DBConfig (..), loadConfig)
-import Wedding.Env (AppM, Env, mkEnv, runAppM)
+import Wedding.Env (AppM, Env, runAppM)
 import Wedding.Page.Home (home)
 import Wedding.Page.RSVP (RSVPFormData, rsvpNameSubmission, rsvpPage)
-import Wedding.DB (initializeDatabase)
 
 -- | API Definition
 type WeddingAPI =
@@ -35,17 +33,5 @@ weddingAPI = Proxy
 app :: Env -> Application
 app env = serve weddingAPI $ hoistServer weddingAPI (runAppM env) serverAppM
 
-runServer :: FilePath -> IO ()
-runServer configPath = do
-  config <- loadConfig configPath
-  let dbPath = location $ database config
-
-  -- Open database connection
-  conn <- initializeDatabase dbPath
-
-  -- Create environment
-  let env = mkEnv conn
-
-  putStrLn $ "Wedding server starting on port 8080"
-  putStrLn $ "Using database: " ++ dbPath
-  run 8080 (app env)
+runServer :: Env -> IO ()
+runServer env = run 8080 (app env)
