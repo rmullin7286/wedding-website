@@ -35,6 +35,7 @@ class (Monad m) => MonadDB m where
   createAttendee :: Text -> Maybe Text -> m ()
   getAllAttendees :: m [Attendee]
   getAttendeesByGroup :: Text -> m [Attendee]
+  updateAttendeeRSVP :: Int -> AttendingStatus -> Maybe Text -> m ()
 
 instance MonadDB AppM where
   getAttendeeByName name = do
@@ -57,6 +58,10 @@ instance MonadDB AppM where
   getAttendeesByGroup group = do
     conn <- getDbConnection
     liftIO $ query conn "SELECT * FROM attendees WHERE group_name = ?" $ Only group
+
+  updateAttendeeRSVP attendeeId attending dietary = do
+    conn <- getDbConnection
+    liftIO $ execute conn "UPDATE attendees SET attending = ?, dietary_restrictions = ? WHERE id = ?" (attending, dietary, attendeeId)
 
 getAllGroupMembersOfAttendeeNamed :: (MonadDB m) => Text -> m [Attendee]
 getAllGroupMembersOfAttendeeNamed name = do

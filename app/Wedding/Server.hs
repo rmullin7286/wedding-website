@@ -16,13 +16,14 @@ import Wedding.Auth (LoginForm (..), User (..))
 import Wedding.Env (AppM, Env (..), runAppM)
 import Wedding.Page.Admin (CsvUpload, adminDashboard, adminLogin, adminLoginHandler, csvUploadHandler)
 import Wedding.Page.Home (home)
-import Wedding.Page.RSVP (RSVPFormData, rsvpNameSubmission, rsvpPage)
+import Wedding.Page.RSVP (RSVPFormData, GroupRSVPFormData, rsvpNameSubmission, rsvpGroupSubmission, rsvpPage)
 
 -- | Public API - no authentication required
 type PublicAPI auths =
   Get '[HTML] (Html ()) -- Home page
     :<|> "rsvp" :> Get '[HTML] (Html ()) -- RSVP page
-    :<|> "rsvp" :> ReqBody '[FormUrlEncoded] Wedding.Page.RSVP.RSVPFormData :> Post '[PlainText] NoContent -- RSVP submission
+    :<|> "rsvp" :> ReqBody '[FormUrlEncoded] Wedding.Page.RSVP.RSVPFormData :> Post '[HTML] (Html ()) -- RSVP name submission -> group form
+    :<|> "rsvp" :> "submit" :> ReqBody '[FormUrlEncoded] Wedding.Page.RSVP.GroupRSVPFormData :> Post '[HTML] (Html ()) -- Final RSVP submission
     :<|> "admin" :> "login" :> Get '[HTML] (Html ()) -- Login form
     :<|> "admin" :> "login" :> ReqBody '[FormUrlEncoded] LoginForm :> Post '[HTML] (Headers '[Header "Set-Cookie" SetCookie, Header "Set-Cookie" SetCookie] (Html ())) -- Login handler
 
@@ -43,6 +44,7 @@ publicServerAppM =
   return home
     :<|> return Wedding.Page.RSVP.rsvpPage
     :<|> Wedding.Page.RSVP.rsvpNameSubmission
+    :<|> Wedding.Page.RSVP.rsvpGroupSubmission
     :<|> return adminLogin
     :<|> adminLoginHandler
 

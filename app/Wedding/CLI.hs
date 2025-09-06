@@ -4,22 +4,11 @@ import Options.Applicative
 
 -- | Command line options for the server
 data Options = Options
-  { configFile :: FilePath
-  }
   deriving (Show)
-
--- | Parser for the --config-file argument
-configFileParser :: Parser FilePath
-configFileParser =
-  strOption
-    ( long "config-file"
-        <> metavar "FILE"
-        <> help "Path to the YAML configuration file"
-    )
 
 -- | Parser for all command line options
 optionsParser :: Parser Options
-optionsParser = Options <$> configFileParser
+optionsParser = pure Options
 
 -- | Parse command line options with program info
 parseOptions :: IO Options
