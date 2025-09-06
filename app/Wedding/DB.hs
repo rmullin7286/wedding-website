@@ -1,12 +1,19 @@
 {-# LANGUAGE DuplicateRecordFields #-}
-{-# LANGUAGE OverloadedRecordDot #-}
 
-module Wedding.DB (initializeDatabase) where
+module Wedding.DB (initializeDatabase, Attendee (..), MonadDB (..), AttendingStatus (..), getAllGroupMembersOfAttendeeNamed) where
 
+import Control.Lens ((^.))
+import Control.Monad.RWS (MonadIO (liftIO))
+import Data.Generics.Labels ()
+import Data.Maybe (listToMaybe)
 import Data.Text (Text)
-import Database.SQLite.Simple (Connection, execute_, open)
+import Database.SQLite.Simple (Connection, FromRow, Only (Only), ToRow, execute, execute_, open, query, query_)
+import Database.SQLite.Simple.FromField (FromField (..))
+import Database.SQLite.Simple.ToField (ToField (..))
+import GHC.Generics (Generic)
 import System.Directory (createDirectoryIfMissing)
 import System.FilePath (takeDirectory)
+import Wedding.Env (AppM, getDbConnection)
 
 initializeDatabase :: FilePath -> IO Connection
 initializeDatabase path = do
@@ -19,20 +26,65 @@ initializeDatabase path = do
   execute_ conn "PRAGMA journal_mode = WAL"
 
   -- Create tables if they don't exist
-  execute_ conn "CREATE TABLE IF NOT EXISTS groups (id INTEGER PRIMARY KEY, name TEXT NOT NULL)"
-  execute_ conn "CREATE TABLE IF NOT EXISTS attendees (id INTEGER PRIMARY KEY, group_id INTEGER REFERENCES groups(id), name TEXT NOT NULL, attending BOOLEAN, dietary_restrictions TEXT)"
+  execute_ conn "CREATE TABLE IF NOT EXISTS attendees (id INTEGER PRIMARY KEY, name TEXT NOT NULL, group_name TEXT, attending TEXT, dietary_restrictions TEXT)"
   return conn
 
+class (Monad m) => MonadDB m where
+  getAttendeeByName :: Text -> m (Maybe Attendee)
+  updateAttendeeGroup :: Int -> Maybe Text -> m ()
+  createAttendee :: Text -> Maybe Text -> m ()
+  getAllAttendees :: m [Attendee]
+  getAttendeesByGroup :: Text -> m [Attendee]
+
+instance MonadDB AppM where
+  getAttendeeByName name = do
+    conn <- getDbConnection
+    results <- liftIO $ query conn "SELECT * FROM attendees WHERE name=?" $ Only name
+    return . listToMaybe $ results
+
+  updateAttendeeGroup aid group = do
+    conn <- getDbConnection
+    liftIO $ execute conn "UPDATE attendees SET group_name = ? WHERE id = ?" (group, aid)
+
+  createAttendee name group = do
+    conn <- getDbConnection
+    liftIO $ execute conn "INSERT INTO attendees (name, group_name, attending) VALUES(?, ?, ?)" (name, group, Undecided)
+
+  getAllAttendees = do
+    conn <- getDbConnection
+    liftIO $ query_ conn "SELECT * FROM attendees"
+
+  getAttendeesByGroup group = do
+    conn <- getDbConnection
+    liftIO $ query conn "SELECT * FROM attendees WHERE group_name = ?" $ Only group
+
+getAllGroupMembersOfAttendeeNamed :: (MonadDB m) => Text -> m [Attendee]
+getAllGroupMembersOfAttendeeNamed name = do
+  attendee <- getAttendeeByName name
+  case attendee of
+    Just a -> case a ^. #group of
+      Just group -> getAttendeesByGroup group
+      Nothing -> return [a]
+    Nothing -> return []
+
+newtype ViaShow a = ViaShow a
+
+instance (Show a) => ToField (ViaShow a) where
+  toField (ViaShow x) = toField (show x)
+
+instance (Read a) => FromField (ViaShow a) where
+  fromField f = ViaShow . read <$> fromField f
+
+data AttendingStatus = Yes | No | Undecided
+  deriving stock (Eq, Show, Read, Generic)
+  deriving (FromField, ToField) via (ViaShow AttendingStatus)
 
 data Attendee = Attendee
   { id :: Int,
-    groupId :: Int,
     name :: Text,
-    attending :: Bool,
-    dietaryRestrictions :: Bool
+    group :: Maybe Text,
+    attending :: AttendingStatus,
+    dietaryRestrictions :: Maybe Text
   }
-
-data Group = Group
-  { id :: Int,
-    name :: Text
-  }
+  deriving stock (Eq, Show, Generic)
+  deriving anyclass (FromRow, ToRow)
