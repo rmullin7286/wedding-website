@@ -1,15 +1,15 @@
-{-# LANGUAGE DataKinds #-}
-
 module Wedding.Page.Admin (adminLogin, adminDashboard, adminLoginHandler, csvUploadHandler, CsvUpload) where
 
 import Control.Monad.IO.Class (liftIO)
-import Data.ByteString.Lazy qualified as BSL
+import Data.ByteString.Lazy (fromStrict)
 import Data.Csv (HasHeader (HasHeader), decode)
 import Data.Text (Text)
 import Data.Text qualified as T
 import Data.Vector qualified as V
 import Effectful (Eff, IOE, (:>))
 import Effectful.Error.Static (Error, throwError)
+import Effectful.FileSystem (FileSystem)
+import Effectful.FileSystem.IO.ByteString (readFile)
 import Lucid
 import Servant (Headers, ServerError, err401)
 import Servant.API (Header)
@@ -19,6 +19,7 @@ import Wedding.Auth (AuthE, LoginForm (..), User (..), getAdminPassword, getCook
 import Wedding.CSV (insertFromCsv)
 import Wedding.Component.BasePage (basePage)
 import Wedding.DB (Attendee (..), AttendingStatus (..), DB, getAllAttendees)
+import Prelude hiding (readFile)
 
 -- | CSV upload form data
 type CsvUpload = MultipartData Tmp
@@ -121,16 +122,15 @@ adminLoginHandler (LoginForm submittedPassword) = do
     else throwError err401
 
 -- | Handle CSV file upload
--- TODO: Get rid of the IOE effect here
-csvUploadHandler :: (IOE :> es, DB :> es) => CsvUpload -> Eff es (Html ())
+csvUploadHandler :: (FileSystem :> es, DB :> es) => CsvUpload -> Eff es (Html ())
 csvUploadHandler multipartData = do
   let csvFiles = filter (\fd -> fdInputName fd == "csvFile") (files multipartData)
   case csvFiles of
     [] -> return $ errorPage ("No file uploaded" :: Text)
     (fileData : _) -> do
       let filePath = fdPayload fileData
-      csvContent <- liftIO $ BSL.readFile filePath
-      case decode HasHeader csvContent of
+      csvContent <- readFile filePath
+      case decode HasHeader (fromStrict csvContent) of
         Left err -> return $ errorPage $ ("CSV parsing error: " :: Text) <> T.pack (show err)
         Right rows -> do
           let rowsList = V.toList rows

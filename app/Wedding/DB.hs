@@ -19,14 +19,13 @@ module Wedding.DB
 where
 
 import Control.Lens ((^.))
-import Control.Monad.RWS (MonadIO (liftIO))
 import Data.Generics.Labels ()
 import Data.Maybe (listToMaybe)
 import Data.Text (Text)
 import Database.SQLite.Simple (Connection, FromRow, Only (Only), ToRow, execute, execute_, open, query, query_)
 import Database.SQLite.Simple.FromField (FromField (..))
 import Database.SQLite.Simple.ToField (ToField (..))
-import Effectful (Eff, Effect, IOE, (:>))
+import Effectful (Eff, Effect, IOE, (:>), liftIO)
 import Effectful.Dispatch.Dynamic (interpretWith)
 import Effectful.TH (makeEffect)
 import GHC.Generics (Generic)

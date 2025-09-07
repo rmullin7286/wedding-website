@@ -6,6 +6,7 @@ module Wedding.Server (runServerEff) where
 import Data.Function ((&))
 import Effectful (Eff, IOE, (:>))
 import Effectful.Error.Static (Error, throwError)
+import Effectful.FileSystem (FileSystem)
 import Effectful.Servant (runWarpServerSettingsContext)
 import Lucid (Html)
 import Network.Wai.Handler.Warp (defaultSettings, setPort)
@@ -54,20 +55,20 @@ publicServerAppM =
     :<|> adminLoginHandler
 
 -- | Protected server handlers - requires authentication
-protectedServerAppM :: (DB :> es, Error ServerError :> es, IOE :> es, AuthE :> es) => AuthResult User -> ServerT ProtectedAPI (Eff es)
+protectedServerAppM :: (FileSystem :> es, DB :> es, Error ServerError :> es, IOE :> es, AuthE :> es) => AuthResult User -> ServerT ProtectedAPI (Eff es)
 protectedServerAppM (Authenticated _user) =
   adminDashboard
     :<|> csvUploadHandler
 protectedServerAppM _ = throwError err401 :<|> (\_ -> throwError err401)
 
 -- | Complete server with authentication
-serverAppM :: (DB :> es, Error ServerError :> es, IOE :> es, AuthE :> es) => ServerT (WeddingAPI '[Cookie]) (Eff es)
+serverAppM :: (DB :> es, Error ServerError :> es, IOE :> es, AuthE :> es, FileSystem :> es) => ServerT (WeddingAPI '[Cookie]) (Eff es)
 serverAppM =
   publicServerAppM
     :<|> protectedServerAppM
     :<|> serveDirectoryWebApp "static"
 
-runServerEff :: (AuthE :> es, DB :> es, IOE :> es) => CookieSettings -> JWTSettings -> Eff es ()
+runServerEff :: (AuthE :> es, DB :> es, IOE :> es, FileSystem :> es) => CookieSettings -> JWTSettings -> Eff es ()
 runServerEff cookieSettings jwtSettings = runWarpServerSettingsContext @(WeddingAPI '[Cookie]) settings ctx serverAppM id
   where
     settings = defaultSettings & setPort 8080

@@ -3,8 +3,8 @@ module Main where
 import Data.Function ((&))
 import Data.Text qualified as T
 import Effectful (runEff)
-import Effectful.Error.Static (runError)
-import Servant (IsSecure (NotSecure), ServerError (ServerError))
+import Effectful.FileSystem (runFileSystem)
+import Servant (IsSecure (NotSecure))
 import Servant.Auth.Server (CookieSettings (cookieIsSecure, cookieXsrfSetting), defaultCookieSettings, defaultJWTSettings, generateKey)
 import System.Environment (getEnv)
 import Wedding.Auth (runAuthE)
@@ -25,4 +25,5 @@ main = do
   runServerEff cookieSettings jwtSettings
     & runAuthE password cookieSettings jwtSettings
     & runDBIO conn
+    & runFileSystem
     & runEff
