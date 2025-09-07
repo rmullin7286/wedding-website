@@ -1,0 +1,6 @@
+packages: .
+
+source-repository-package
+  type: git
+  location: https://github.com/Kleidukos/servant-effectful.git
+  tag: 1e574e6c0144456ee7d161a586fcc82377c9454d 
