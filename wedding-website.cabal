@@ -46,6 +46,8 @@ common warnings
 executable wedding-website
   -- Import common warning flags.
   import: warnings
+
+  ghc-options: -fplugin=Effectful.Plugin
   -- .hs or .lhs file containing the Main module.
   main-is: Main.hs
   -- Modules included in this executable, other than Main.
@@ -56,7 +58,6 @@ executable wedding-website
     Wedding.Component.BasePage
     Wedding.Component.NavBar
     Wedding.DB
-    Wedding.Env
     Wedding.Html.Attributes
     Wedding.Page.Admin
     Wedding.Page.Home
@@ -67,6 +68,11 @@ executable wedding-website
   -- other-extensions:
   -- Other library packages from which modules are imported.
   build-depends:
+    effectful,
+    effectful-core,
+    effectful-th,
+    effectful-plugin,
+    servant-effectful,
     aeson,
     base ^>=4.18.3.0,
     bytestring,
@@ -105,3 +111,6 @@ executable wedding-website
     DerivingVia
     OverloadedLabels
     OverloadedStrings
+    LambdaCase
+    DataKinds
+

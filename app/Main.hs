@@ -1,29 +1,28 @@
 module Main where
 
+import Data.Function ((&))
 import Data.Text qualified as T
-import Servant (IsSecure (NotSecure))
+import Effectful (runEff)
+import Effectful.Error.Static (runError)
+import Servant (IsSecure (NotSecure), ServerError (ServerError))
 import Servant.Auth.Server (CookieSettings (cookieIsSecure, cookieXsrfSetting), defaultCookieSettings, defaultJWTSettings, generateKey)
 import System.Environment (getEnv)
-import Wedding.DB (initializeDatabase)
-import Wedding.Env (Env(..))
-import Wedding.Server (runServer)
-
--- | Method to load environment from the system.
--- Should be called at the beginning of the program before the server starts.
-loadEnv :: IO Env
-loadEnv =
-  Env
-    <$> (getEnv "WEDDING_DATABASE" >>= initializeDatabase)
-    <*> (T.pack <$> getEnv "WEDDING_PASSWORD")
-    <*> (defaultJWTSettings <$> generateKey)
-    <*> pure developmentCookieSettings
-  where
-    -- Cookie settings that work with HTTP (development) - XSRF disabled for simplicity
-    developmentCookieSettings =
-      defaultCookieSettings
-        { cookieIsSecure = NotSecure, -- Allow cookies over HTTP
-          cookieXsrfSetting = Nothing -- Disable XSRF - Need to figure out exactly how xsrf works
-        }
+import Wedding.Auth (runAuthE)
+import Wedding.DB (initializeDatabase, runDBIO)
+import Wedding.Server (runServerEff)
 
 main :: IO ()
-main = loadEnv >>= runServer
+main = do
+  dbFile <- getEnv "WEDDING_DATABASE"
+  conn <- initializeDatabase dbFile
+  password <- T.pack <$> getEnv "WEDDING_PASSWORD"
+  jwtSettings <- defaultJWTSettings <$> generateKey
+  let cookieSettings =
+        defaultCookieSettings
+          { cookieIsSecure = NotSecure,
+            cookieXsrfSetting = Nothing
+          }
+  runServerEff cookieSettings jwtSettings
+    & runAuthE password cookieSettings jwtSettings
+    & runDBIO conn
+    & runEff

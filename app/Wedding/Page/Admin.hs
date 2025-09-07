@@ -8,16 +8,17 @@ import Data.Csv (HasHeader (HasHeader), decode)
 import Data.Text (Text)
 import Data.Text qualified as T
 import Data.Vector qualified as V
+import Effectful (Eff, IOE, (:>))
+import Effectful.Error.Static (Error, throwError)
 import Lucid
-import Servant (Headers, err401, throwError)
+import Servant (Headers, ServerError, err401)
 import Servant.API (Header)
 import Servant.Auth.Server (SetCookie, acceptLogin)
 import Servant.Multipart (FileData (fdInputName, fdPayload), MultipartData (files), Tmp)
-import Wedding.Auth (LoginForm (..), User (..))
+import Wedding.Auth (AuthE, LoginForm (..), User (..), getAdminPassword, getCookieSettings, getJWTSettings)
 import Wedding.CSV (insertFromCsv)
 import Wedding.Component.BasePage (basePage)
-import Wedding.Env (AppM, getAdminPassword, getCookieSettings, getJWTSettings)
-import Wedding.DB (MonadDB(..), Attendee(..), AttendingStatus(..))
+import Wedding.DB (Attendee (..), AttendingStatus (..), DB, getAllAttendees)
 
 -- | CSV upload form data
 type CsvUpload = MultipartData Tmp
@@ -50,14 +51,14 @@ adminLogin = basePage "Admin Login" $ do
                   "Login"
 
 -- | Admin dashboard page
-adminDashboard :: AppM (Html ())
+adminDashboard :: (DB :> es) => Eff es (Html ())
 adminDashboard = do
   attendees <- getAllAttendees
   return $ basePage "Admin Dashboard" $ do
     div_ [class_ "container mx-auto px-4 py-8"] $ do
       div_ [class_ "bg-white rounded-lg shadow-md p-6"] $ do
         h1_ [class_ "text-3xl font-bold mb-6"] "Admin Dashboard"
-        
+
         -- CSV Upload Section
         div_ [class_ "mb-6"] $ do
           div_ [class_ "bg-gray-50 p-4 rounded-lg"] $ do
@@ -67,7 +68,7 @@ adminDashboard = do
               div_ [class_ "mb-3"] $
                 input_ [type_ "file", name_ "csvFile", accept_ ".csv", class_ "form-control", required_ "required"]
               button_ [type_ "submit", class_ "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"] "Upload CSV"
-        
+
         -- Attendees Table Section
         div_ [class_ "mb-6"] $ do
           h2_ [class_ "text-xl font-semibold mb-4"] "Current Attendees"
@@ -100,12 +101,13 @@ adminDashboard = do
         Just restrictions -> span_ [class_ "badge bg-info"] $ toHtml restrictions
 
 -- | Handle login form submission
-adminLoginHandler :: LoginForm -> AppM (Headers '[Header "Set-Cookie" SetCookie, Header "Set-Cookie" SetCookie] (Html ()))
+adminLoginHandler :: (AuthE :> es, IOE :> es, Error ServerError :> es) => LoginForm -> Eff es (Headers '[Header "Set-Cookie" SetCookie, Header "Set-Cookie" SetCookie] (Html ()))
 adminLoginHandler (LoginForm submittedPassword) = do
   adminPassword <- getAdminPassword
   if submittedPassword == adminPassword
     then do
       cookieSettings <- getCookieSettings
+
       jwtSettings <- getJWTSettings
       mApplyCookies <- liftIO $ acceptLogin cookieSettings jwtSettings AdminUser
       case mApplyCookies of
@@ -119,7 +121,8 @@ adminLoginHandler (LoginForm submittedPassword) = do
     else throwError err401
 
 -- | Handle CSV file upload
-csvUploadHandler :: CsvUpload -> AppM (Html ())
+-- TODO: Get rid of the IOE effect here
+csvUploadHandler :: (IOE :> es, DB :> es) => CsvUpload -> Eff es (Html ())
 csvUploadHandler multipartData = do
   let csvFiles = filter (\fd -> fdInputName fd == "csvFile") (files multipartData)
   case csvFiles of
