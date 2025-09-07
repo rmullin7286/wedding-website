@@ -1,5 +1,5 @@
-{-# LANGUAGE DeriveAnyClass #-}
-{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TypeFamilies #-}
 
 module Wedding.Auth
   ( User (..),
@@ -9,21 +9,34 @@ module Wedding.Auth
     getAdminPassword,
     getCookieSettings,
     getJWTSettings,
+    acceptLogin,
   )
 where
 
-import Control.Lens (view)
 import Data.Aeson (FromJSON, ToJSON)
 import Data.Generics.Labels ()
 import Data.Text (Text)
-import Effectful (Eff, (:>))
-import Effectful.Reader.Dynamic (Reader, ask, runReader)
+import Effectful (Eff, Effect, IOE, MonadIO (liftIO), (:>))
+import Effectful.Dispatch.Dynamic (interpretWith)
+import Effectful.TH (makeEffect)
 import GHC.Generics (Generic)
+import Servant (AddHeader)
 import Servant.Auth.JWT (FromJWT, ToJWT)
-import Servant.Auth.Server (CookieSettings, JWTSettings)
+import Servant.Auth.Server (CookieSettings, JWTSettings, SetCookie)
+import Servant.Auth.Server qualified as SAS
 import Web.FormUrlEncoded (FromForm)
 
-type AuthE = Reader AuthSettings
+data AuthE :: Effect where
+  GetAdminPassword :: AuthE m Text
+  GetCookieSettings :: AuthE m CookieSettings
+  GetJWTSettings :: AuthE m JWTSettings
+  AcceptLogin ::
+    ( AddHeader mods "Set-Cookie" SetCookie response withOneCookie,
+      AddHeader mods "Set-Cookie" SetCookie withOneCookie withTwoCookies
+    ) =>
+    AuthE m (Maybe (response -> withTwoCookies))
+
+makeEffect ''AuthE
 
 data AuthSettings = AuthSettings
   { adminPassword :: Text,
@@ -32,17 +45,12 @@ data AuthSettings = AuthSettings
   }
   deriving (Generic)
 
-runAuthE :: Text -> CookieSettings -> JWTSettings -> Eff (AuthE : es) a -> Eff es a
-runAuthE pass cookie jwt = runReader $ AuthSettings pass cookie jwt
-
-getAdminPassword :: (AuthE :> es) => Eff es Text
-getAdminPassword = view #adminPassword <$> ask
-
-getCookieSettings :: (AuthE :> es) => Eff es CookieSettings
-getCookieSettings = view #cookieSettings <$> ask
-
-getJWTSettings :: (AuthE :> es) => Eff es JWTSettings
-getJWTSettings = view #jwtSettings <$> ask
+runAuthE :: (IOE :> es) => Text -> CookieSettings -> JWTSettings -> Eff (AuthE : es) a -> Eff es a
+runAuthE pass cookie jwt action = interpretWith action $ \_ -> \case
+  GetAdminPassword -> return pass
+  GetCookieSettings -> return cookie
+  GetJWTSettings -> return jwt
+  AcceptLogin -> liftIO $ SAS.acceptLogin cookie jwt AdminUser
 
 -- | Simple user type for admin authentication
 data User = AdminUser

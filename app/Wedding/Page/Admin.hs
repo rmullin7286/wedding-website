@@ -1,21 +1,20 @@
 module Wedding.Page.Admin (adminLogin, adminDashboard, adminLoginHandler, csvUploadHandler, CsvUpload) where
 
-import Control.Monad.IO.Class (liftIO)
 import Data.ByteString.Lazy (fromStrict)
 import Data.Csv (HasHeader (HasHeader), decode)
 import Data.Text (Text)
 import Data.Text qualified as T
 import Data.Vector qualified as V
-import Effectful (Eff, IOE, (:>))
+import Effectful (Eff, (:>))
 import Effectful.Error.Static (Error, throwError)
 import Effectful.FileSystem (FileSystem)
 import Effectful.FileSystem.IO.ByteString (readFile)
 import Lucid
 import Servant (Headers, ServerError, err401)
 import Servant.API (Header)
-import Servant.Auth.Server (SetCookie, acceptLogin)
+import Servant.Auth.Server (SetCookie)
 import Servant.Multipart (FileData (fdInputName, fdPayload), MultipartData (files), Tmp)
-import Wedding.Auth (AuthE, LoginForm (..), User (..), getAdminPassword, getCookieSettings, getJWTSettings)
+import Wedding.Auth (AuthE, LoginForm (..), acceptLogin, getAdminPassword)
 import Wedding.CSV (insertFromCsv)
 import Wedding.Component.BasePage (basePage)
 import Wedding.DB (Attendee (..), AttendingStatus (..), DB, getAllAttendees)
@@ -102,15 +101,12 @@ adminDashboard = do
         Just restrictions -> span_ [class_ "badge bg-info"] $ toHtml restrictions
 
 -- | Handle login form submission
-adminLoginHandler :: (AuthE :> es, IOE :> es, Error ServerError :> es) => LoginForm -> Eff es (Headers '[Header "Set-Cookie" SetCookie, Header "Set-Cookie" SetCookie] (Html ()))
+adminLoginHandler :: (AuthE :> es, Error ServerError :> es) => LoginForm -> Eff es (Headers '[Header "Set-Cookie" SetCookie, Header "Set-Cookie" SetCookie] (Html ()))
 adminLoginHandler (LoginForm submittedPassword) = do
   adminPassword <- getAdminPassword
   if submittedPassword == adminPassword
     then do
-      cookieSettings <- getCookieSettings
-
-      jwtSettings <- getJWTSettings
-      mApplyCookies <- liftIO $ acceptLogin cookieSettings jwtSettings AdminUser
+      mApplyCookies <- acceptLogin
       case mApplyCookies of
         Nothing -> throwError err401
         Just applyCookies -> do
