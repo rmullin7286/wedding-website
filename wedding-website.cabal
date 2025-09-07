@@ -10,7 +10,7 @@ cabal-version: 3.4
 --   http://haskell.org/cabal/users-guide/
 --
 -- The name of the package.
-name: wedding
+name: wedding-website
 -- The package version.
 -- See the Haskell package versioning policy (PVP) for standards
 -- guiding when and how versions should be incremented.
@@ -43,7 +43,7 @@ extra-doc-files: CHANGELOG.md
 common warnings
   ghc-options: -Wall
 
-executable wedding
+executable wedding-website
   -- Import common warning flags.
   import: warnings
   -- .hs or .lhs file containing the Main module.

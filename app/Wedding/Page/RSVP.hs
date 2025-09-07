@@ -6,8 +6,7 @@ import Control.Monad (forM_)
 import Control.Monad.IO.Class (MonadIO (..))
 import Data.Text (Text, pack)
 import Data.Text qualified as T
-import Lucid (Html, action_, button_, class_, cols_, div_, for_, form_, h1_, h2_, id_, input_, label_, method_, name_, onclick_, option_, p_, placeholder_, required_, rows_, section_, select_, selected_, textarea_, toHtml, type_, value_)
-import Servant (NoContent)
+import Lucid (Html, action_, button_, class_, div_, for_, form_, h1_, h2_, id_, input_, label_, method_, name_, onclick_, p_, placeholder_, required_, rows_, section_, textarea_, toHtml, type_, value_)
 import Web.FormUrlEncoded (FromForm, fromForm, parseAll, parseUnique)
 import Wedding.Component.BasePage (basePage)
 import Wedding.DB (Attendee (..), AttendingStatus (..), MonadDB (..), getAllGroupMembersOfAttendeeNamed)
@@ -56,7 +55,7 @@ newtype GroupRSVPFormData = GroupRSVPFormData
 
 instance FromForm GroupRSVPFormData where
   fromForm f = do
-    attendeeIds <- parseAll ("attendeeId") f
+    attendeeIds <- parseAll "attendeeId" f
     attendees <- mapM (parseAttendeeData f) attendeeIds
     return $ GroupRSVPFormData attendees
     where
@@ -64,13 +63,13 @@ instance FromForm GroupRSVPFormData where
         let attendeeId = read $ T.unpack attendeeIdText
         let attendingFieldName = "attending_" <> attendeeIdText
         let dietaryFieldName = "dietary_" <> attendeeIdText
-        
+
         attendingText <- parseUnique attendingFieldName form
         dietaryText <- parseUnique dietaryFieldName form
-        
+
         let attendingStatus = read $ T.unpack attendingText
         let dietaryRestrictions = if T.null dietaryText then Nothing else Just dietaryText
-        
+
         return $ AttendeeRSVPData attendeeId attendingStatus dietaryRestrictions
 
 rsvpNameSubmission :: RSVPFormData -> AppM (Html ())
@@ -108,7 +107,7 @@ groupRSVPPage attendees = basePage "RSVP for Your Group" $ do
 
 -- | Generate RSVP form for individual attendee
 attendeeRSVPForm :: Attendee -> Html ()
-attendeeRSVPForm (Attendee attendeeId attendeeName _ currentStatus currentDietary) = do
+attendeeRSVPForm (Attendee attendeeId attendeeName _ _ currentDietary) = do
   div_ [class_ "card mb-4"] $ do
     div_ [class_ "card-header"] $ do
       h2_ [class_ "h5 mb-0"] $ toHtml attendeeName
@@ -120,9 +119,9 @@ attendeeRSVPForm (Attendee attendeeId attendeeName _ currentStatus currentDietar
       div_ [class_ "mb-3"] $ do
         label_ [class_ "form-label fw-bold"] "Will you be attending?"
         div_ [class_ ""] $ do
-          attendingOption attendeeId "Yes" Yes currentStatus
-          attendingOption attendeeId "No" No currentStatus
-          attendingOption attendeeId "Maybe" Undecided currentStatus
+          attendingOption attendeeId "Yes" Yes
+          attendingOption attendeeId "No" No
+          attendingOption attendeeId "Maybe" Undecided
 
       -- Dietary restrictions
       div_ [class_ "mb-3"] $ do
@@ -137,19 +136,19 @@ attendeeRSVPForm (Attendee attendeeId attendeeName _ currentStatus currentDietar
           $ maybe "" toHtml currentDietary
 
 -- | Generate radio button for attending status
-attendingOption :: Int -> Text -> AttendingStatus -> AttendingStatus -> Html ()
-attendingOption attendeeId label status currentStatus = do
+attendingOption :: Int -> Text -> AttendingStatus -> Html ()
+attendingOption attendeeId label status = do
   let fieldName = "attending_" <> pack (show attendeeId)
   let elementId = "attending_" <> pack (show attendeeId) <> "_" <> label
   div_ [class_ "form-check form-check-inline"] $ do
-    input_ $
+    input_
       [ class_ "form-check-input",
         type_ "radio",
         name_ fieldName,
         id_ elementId,
-        value_ $ pack $ show status
+        value_ $ pack $ show status,
+        required_ ""
       ]
-        ++ (if status == currentStatus then [required_ ""] else [required_ ""])
     label_ [class_ "form-check-label", for_ elementId] $ toHtml label
 
 -- | Guest not found error page
