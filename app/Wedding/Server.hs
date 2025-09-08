@@ -45,8 +45,8 @@ type WeddingAPI auths =
     :<|> "static" S.:> Raw
 
 -- | Public server handlers - no authentication
-publicServerAppM :: (AuthE :> es, DB :> es, Error ServerError :> es, IOE :> es) => ServerT (PublicAPI '[Cookie]) (Eff es)
-publicServerAppM =
+publicServer :: (AuthE :> es, DB :> es, Error ServerError :> es, IOE :> es) => ServerT (PublicAPI '[Cookie]) (Eff es)
+publicServer =
   return home
     :<|> return Wedding.Page.RSVP.rsvpPage
     :<|> Wedding.Page.RSVP.rsvpNameSubmission
@@ -55,21 +55,21 @@ publicServerAppM =
     :<|> adminLoginHandler
 
 -- | Protected server handlers - requires authentication
-protectedServerAppM :: (FileSystem :> es, DB :> es, Error ServerError :> es, IOE :> es, AuthE :> es) => AuthResult User -> ServerT ProtectedAPI (Eff es)
-protectedServerAppM (Authenticated _user) =
+protectedServer :: (FileSystem :> es, DB :> es, Error ServerError :> es, IOE :> es, AuthE :> es) => AuthResult User -> ServerT ProtectedAPI (Eff es)
+protectedServer (Authenticated _user) =
   adminDashboard
     :<|> csvUploadHandler
-protectedServerAppM _ = throwError err401 :<|> (\_ -> throwError err401)
+protectedServer _ = throwError err401 :<|> (\_ -> throwError err401)
 
 -- | Complete server with authentication
-serverAppM :: (DB :> es, Error ServerError :> es, IOE :> es, AuthE :> es, FileSystem :> es) => ServerT (WeddingAPI '[Cookie]) (Eff es)
-serverAppM =
-  publicServerAppM
-    :<|> protectedServerAppM
+server :: (DB :> es, Error ServerError :> es, IOE :> es, AuthE :> es, FileSystem :> es) => ServerT (WeddingAPI '[Cookie]) (Eff es)
+server =
+  publicServer
+    :<|> protectedServer
     :<|> serveDirectoryWebApp "static"
 
 runServerEff :: (AuthE :> es, DB :> es, IOE :> es, FileSystem :> es) => CookieSettings -> JWTSettings -> Eff es ()
-runServerEff cookieSettings jwtSettings = runWarpServerSettingsContext @(WeddingAPI '[Cookie]) settings ctx serverAppM id
+runServerEff cookieSettings jwtSettings = runWarpServerSettingsContext @(WeddingAPI '[Cookie]) settings ctx server id
   where
     settings = defaultSettings & setPort 8080
     ctx = cookieSettings :. jwtSettings :. EmptyContext
