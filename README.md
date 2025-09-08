@@ -16,7 +16,7 @@ Once it's installed, the tool versions used to build are:
 
 ## Tech Stack
 
-* Server - `servant`
+* Server - `servant` and `servant-effectful`
 * HTML Generation - `lucid`
-* State Management - `ReaderT` pattern
+* Effect system - `effectful`
 * Database - SQLite with `sqlite-simple`

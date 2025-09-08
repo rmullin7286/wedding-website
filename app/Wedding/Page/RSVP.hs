@@ -6,11 +6,11 @@ import Control.Monad (forM_)
 import Control.Monad.IO.Class (MonadIO (..))
 import Data.Text (Text, pack)
 import Data.Text qualified as T
+import Effectful (Eff, IOE, (:>))
 import Lucid (Html, action_, button_, class_, div_, for_, form_, h1_, h2_, id_, input_, label_, method_, name_, onclick_, p_, placeholder_, required_, rows_, section_, textarea_, toHtml, type_, value_)
 import Web.FormUrlEncoded (FromForm, fromForm, parseAll, parseUnique)
 import Wedding.Component.BasePage (basePage)
-import Wedding.DB (Attendee (..), AttendingStatus (..), MonadDB (..), getAllGroupMembersOfAttendeeNamed)
-import Wedding.Env (AppM)
+import Wedding.DB (Attendee (..), AttendingStatus (..), DB, getAllGroupMembersOfAttendeeNamed, updateAttendeeRSVP)
 
 rsvpPage :: Html ()
 rsvpPage = basePage "RSVP" $ do
@@ -72,7 +72,7 @@ instance FromForm GroupRSVPFormData where
 
         return $ AttendeeRSVPData attendeeId attendingStatus dietaryRestrictions
 
-rsvpNameSubmission :: RSVPFormData -> AppM (Html ())
+rsvpNameSubmission :: (DB :> es) => RSVPFormData -> Eff es (Html ())
 rsvpNameSubmission RSVPFormData {..} = do
   attendees <- getAllGroupMembersOfAttendeeNamed guestName
   if null attendees
@@ -80,11 +80,10 @@ rsvpNameSubmission RSVPFormData {..} = do
     else return $ groupRSVPPage attendees
 
 -- | Group RSVP submission handler
-rsvpGroupSubmission :: GroupRSVPFormData -> AppM (Html ())
+rsvpGroupSubmission :: (DB :> es) => GroupRSVPFormData -> Eff es (Html ())
 rsvpGroupSubmission (GroupRSVPFormData attendeeRSVPs) = do
   -- Process each attendee's RSVP data
   forM_ attendeeRSVPs $ \(AttendeeRSVPData aid attending dietary) -> do
-    liftIO $ print aid
     updateAttendeeRSVP aid attending dietary
   return rsvpSuccessPage
 
