@@ -3,7 +3,7 @@
 # Hot reload development server for the wedding website
 # Watches for changes in app/ directory and automatically rebuilds and restarts the server
 
-export WEDDING_DATABASE="$HOME/.local/share/wedding/wedding.sqlite"
+export WEDDING_DATABASE="$HOME/.local/share/wedding/wedding.db"
 export WEDDING_PASSWORD="password"
 
 set -e
@@ -24,8 +24,7 @@ log() {
 
 # Check if fswatch is installed
 if ! command -v fswatch &> /dev/null; then
-    log $RED "fswatch is not installed. Please install it with:"
-    log $YELLOW "  brew install fswatch"
+    log $RED "fswatch is not installed. Please install it before running."
     exit 1
 fi
 
