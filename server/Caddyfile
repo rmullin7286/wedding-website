@@ -1,0 +1,18 @@
+{
+	# Email used for Let's Encrypt/ZeroSSL account + expiry notices
+	email ryanandshaemullin@gmail.com 
+}
+
+# Your site (add more domains on the first line if needed)
+ryanandshaemullin.com {
+	# Compression
+	encode zstd gzip
+
+	# Reverse proxy to your app (listening on 8080 in its container)
+	reverse_proxy app:8080
+}
+
+# (Optional) redirect www → apex
+www.ryanandshaemullin.com {
+	redir https://ryanandshaemullin.com{uri} 301
+}
