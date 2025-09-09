@@ -28,4 +28,6 @@ USER appuser
 
 EXPOSE 8080
 
+ENV WEDDING_DATABASE=/data/wedding.db
+
 ENTRYPOINT ["./wedding-website"]

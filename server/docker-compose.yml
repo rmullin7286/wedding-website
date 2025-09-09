@@ -1,0 +1,42 @@
+version: "3.9"
+
+services:
+  app:
+    image: ghcr.io/rmullin7286/wedding-website:latest
+    container_name: wedding-website
+    restart: unless-stopped
+    networks:
+      - web
+    expose:
+      - "8080"
+    env_file: 
+      - .env
+    environment: WEDDING_PASSWORD=${WEDDING_PASSWORD}
+    volumes: 
+      - ./data:/data:rw
+  caddy:
+    image: caddy:2
+    container_name: caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - DOMAIN=${DOMAIN}
+      - EMAIL=${EMAIL}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data     # stores certs; persist between restarts
+      - caddy_config:/config
+    networks:
+      - web
+    depends_on:
+      - app
+
+networks:
+  web:
+    driver: bridge
+
+volumes:
+  caddy_data:
+  caddy_config:

@@ -1,0 +1,68 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build-and-deploy:
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Docker Meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository }}
+          tags: |
+            type=semver,pattern={{version}}
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build & Push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: ${{ steps.meta.output.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Export VERSION from metadata
+        run: echo "VERSION=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.version'] }}" >> $GITHUB_ENV
+
+#      - name: SSH deploy
+#        uses: appleboy/ssh-action@v1.0.3
+#        env:
+#          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+#          GHCR_USERNAME: ${{ github.repository_owner }}
+#        with:
+#          host: ${{ secrets.SSH_HOST }}
+#          username: ${{ secrets.SSH_USER }}
+#          key: ${{ secrets.SSH_PRIVATE_KEY }}
+#          port: ${{ secrets.SSH_PORT || 22 }}
+#          script_stop: true
+#          envs: DEPLOY_PATH,GHCR_USERNAME,GHCR_TOKEN
+#          script: |
+#            set -euo pipefail
+#            echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USERNAME" --password-stdin
+#            cd "$DEPLOY_PATH"
+#            docker compose pull || docker-compose pull
+#            docker compose up -d || docker-compose up -d
+#            docker image prune -af
+
+
