@@ -40,13 +40,16 @@ extra-doc-files: CHANGELOG.md
 
 executable wedding-website
   -- Import common warning flags.
-  ghc-options: -fplugin=Effectful.Plugin -Wall -Werror
+  ghc-options:
+    -fplugin=Effectful.Plugin
+    -Wall
+    -Werror
+
   -- .hs or .lhs file containing the Main module.
   main-is: Main.hs
   -- Modules included in this executable, other than Main.
   other-modules:
     Wedding.Auth
-    Wedding.CLI
     Wedding.CSV
     Wedding.Component.BasePage
     Wedding.Component.NavBar
@@ -61,18 +64,16 @@ executable wedding-website
   -- other-extensions:
   -- Other library packages from which modules are imported.
   build-depends:
-    effectful,
-    effectful-core,
-    effectful-th,
-    effectful-plugin,
-    servant-effectful,
     aeson,
     base ^>=4.18.3.0,
     bytestring,
     cassava,
     cookie,
     directory,
-    extra,
+    effectful,
+    effectful-core,
+    effectful-plugin,
+    effectful-th,
     filepath,
     generic-lens,
     http-api-data,
@@ -80,10 +81,10 @@ executable wedding-website
     jose,
     lens,
     lucid,
-    optparse-applicative,
     servant,
     servant-auth,
     servant-auth-server,
+    servant-effectful,
     servant-lucid,
     servant-multipart,
     servant-server,
@@ -91,18 +92,16 @@ executable wedding-website
     text,
     vector,
     warp,
-    yaml,
 
   -- Directories containing source files.
   hs-source-dirs: app
   -- Base language which the package is written in.
   default-language: GHC2021
   default-extensions:
+    DataKinds
     DeriveAnyClass
     DerivingStrategies
     DerivingVia
+    LambdaCase
     OverloadedLabels
     OverloadedStrings
-    LambdaCase
-    DataKinds
-
