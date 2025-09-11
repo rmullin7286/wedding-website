@@ -12,7 +12,7 @@ services:
     env_file: 
       - .env
     environment: 
-      - WEDDING_PASSWORD: ${WEDDING_PASSWORD}
+      WEDDING_PASSWORD: ${WEDDING_PASSWORD}
     volumes: 
       - ./data:/data:rw
   caddy:
