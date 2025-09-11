@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   app:
     image: ghcr.io/rmullin7286/wedding-website:latest
@@ -9,11 +7,12 @@ services:
       - web
     expose:
       - "8080"
-    env_file: 
+    env_file:
       - .env
-    environment: 
+    user: 1001:1001
+    environment:
       WEDDING_PASSWORD: ${WEDDING_PASSWORD}
-    volumes: 
+    volumes:
       - ./data:/data:rw
   caddy:
     image: caddy:2

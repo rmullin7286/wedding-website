@@ -23,9 +23,6 @@ RUN apt-get update \
 COPY --from=build /bin/wedding-website ./wedding-website
 COPY --from=build /app/static ./static
 
-RUN useradd -m -u 10001 appuser
-USER appuser
-
 EXPOSE 8080
 
 ENV WEDDING_DATABASE=/data/wedding.db
