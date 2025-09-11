@@ -3,10 +3,9 @@
 module Wedding.Page.RSVP (rsvpPage, rsvpNameSubmission, rsvpGroupSubmission, RSVPFormData, GroupRSVPFormData) where
 
 import Control.Monad (forM_)
-import Control.Monad.IO.Class (MonadIO (..))
 import Data.Text (Text, pack)
 import Data.Text qualified as T
-import Effectful (Eff, IOE, (:>))
+import Effectful (Eff, (:>))
 import Lucid (Html, action_, button_, class_, div_, for_, form_, h1_, h2_, id_, input_, label_, method_, name_, onclick_, p_, placeholder_, required_, rows_, section_, textarea_, toHtml, type_, value_)
 import Web.FormUrlEncoded (FromForm, fromForm, parseAll, parseUnique)
 import Wedding.Component.BasePage (basePage)
