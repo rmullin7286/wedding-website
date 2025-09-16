@@ -256,6 +256,28 @@ h1, h2, h3, h4, h5, h6 {
     transform: translateY(-2px); /* Slight upward movement for elegant effect */
 }
 
+/* Mobile responsive layout for contact section */
+@media (max-width: 768px) {
+    #contact .contact-table {
+        grid-template-columns: 1fr; /* Single column on mobile */
+        gap: 0.5rem; /* Reduce gap for mobile */
+        text-align: center; /* Center align everything */
+        max-width: 300px; /* Reduce max width for mobile */
+    }
+    
+    #contact .contact-label {
+        text-align: center; /* Center align labels */
+        margin-bottom: 0.5rem; /* Add space below labels */
+    }
+    
+    #contact .contact-link {
+        text-align: center; /* Center align links */
+        justify-self: center; /* Center within grid cell */
+        margin-bottom: 1.5rem; /* Space between contact entries */
+        padding: 0.5rem 0; /* Remove horizontal padding on mobile to fix centering */
+    }
+}
+
 /* RSVP Form Styling */
 .rsvp-form .btn {
     background-color: var(--secondary-color); /* Wine red background */
