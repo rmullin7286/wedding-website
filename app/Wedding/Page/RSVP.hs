@@ -6,7 +6,34 @@ import Control.Monad (forM_)
 import Data.Text (Text, pack)
 import Data.Text qualified as T
 import Effectful (Eff, (:>))
-import Lucid (Html, action_, button_, class_, div_, for_, form_, h1_, h2_, id_, input_, label_, method_, name_, onclick_, p_, placeholder_, required_, rows_, section_, textarea_, toHtml, type_, value_)
+import Lucid
+  ( Html,
+    a_,
+    action_,
+    button_,
+    class_,
+    div_,
+    for_,
+    form_,
+    h1_,
+    h2_,
+    href_,
+    id_,
+    input_,
+    label_,
+    method_,
+    name_,
+    onclick_,
+    p_,
+    placeholder_,
+    required_,
+    rows_,
+    section_,
+    textarea_,
+    toHtml,
+    type_,
+    value_,
+  )
 import Web.FormUrlEncoded (FromForm, fromForm, parseAll, parseUnique)
 import Wedding.Component.BasePage (basePage)
 import Wedding.DB (Attendee (..), AttendingStatus (..), DB, getAllGroupMembersOfAttendeeNamed, updateAttendeeRSVP)
@@ -159,7 +186,8 @@ guestNotFoundPage guestName = basePage "Guest Not Found" $ do
         "We couldn't find \"" <> toHtml guestName <> "\" in our guest list."
       p_ "Please check the spelling of your name and try again, or contact us if you believe this is an error."
       div_ [class_ "mt-4"] $ do
-        button_ [class_ "btn btn-primary", onclick_ "history.back()"] "Go Back"
+        button_ [class_ "btn btn-primary me-3", onclick_ "history.back()"] "Go Back"
+        a_ [href_ "/#contact", class_ "btn btn-outline-secondary"] "Contact Us"
 
 -- | RSVP success page
 rsvpSuccessPage :: Html ()

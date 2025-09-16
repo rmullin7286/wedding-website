@@ -185,3 +185,32 @@ h1, h2, h3, h4, h5, h6 {
     border-color: white; /* White border on hover */
     color: white; /* White text on hover */
 }
+
+/* Contact Section - Periwinkle background with light text */
+#contact {
+    background-color: var(--primary-color); /* Periwinkle background */
+}
+
+#contact h1 {
+    color: white; /* White main heading for contrast against periwinkle background */
+}
+
+#contact h2 {
+    color: white; /* White headings for contrast against periwinkle background */
+}
+
+#contact .lead {
+    color: var(--light-text); /* Light text for subtitle */
+}
+
+#contact .fs-3 {
+    color: var(--light-text); /* Slightly transparent white for main content */
+}
+
+#contact .fs-5 {
+    color: var(--light-text); /* Slightly transparent white for smaller text */
+}
+
+#contact .text-muted {
+    color: var(--light-text-muted) !important; /* Override Bootstrap's muted color with light white */
+}

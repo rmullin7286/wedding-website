@@ -1,6 +1,6 @@
 module Wedding.Page.Home (home) where
 
-import Lucid (Html, class_, div_, h1_, h2_, id_, p_, section_, a_, href_, target_)
+import Lucid (Html, a_, class_, div_, h1_, h2_, href_, id_, p_, section_, target_)
 import Wedding.Component.BasePage (basePage)
 
 home :: Html ()
@@ -8,6 +8,7 @@ home = basePage "Home" $ do
   hero
   whenAndWhere
   rsvpSection
+  contactSection
 
 hero :: Html ()
 hero = do
@@ -44,3 +45,23 @@ rsvpSection = do
           h2_ [class_ "h2 mb-4"] "Join Us"
           p_ [class_ "fs-4 mb-4"] "We hope you'll join us on this special day as we celebrate our love and begin our journey together."
           a_ [href_ "/rsvp", class_ "btn btn-lg px-5"] "RSVP"
+
+contactSection :: Html ()
+contactSection = do
+  section_ [class_ "py-5", id_ "contact"] $ do
+    div_ [class_ "container"] $ do
+      div_ [class_ "row justify-content-center mb-5"] $ do
+        div_ [class_ "col-lg-8 text-center"] $ do
+          h1_ [class_ "display-5 mb-4"] "Contact Us"
+          p_ [class_ "lead"] "Feel free to reach out if you have any questions."
+
+      div_ [class_ "row g-5"] $ do
+        -- Email Column
+        div_ [class_ "col-md-6 text-center py-4"] $ do
+          h2_ [class_ "h2 mb-4"] "Email"
+          p_ [class_ "mb-3 fs-3"] "ryanandshaemullin@gmail.com"
+
+        -- Phone Column
+        div_ [class_ "col-md-6 text-center py-4"] $ do
+          h2_ [class_ "h2 mb-4"] "Phone"
+          p_ [class_ "mb-3 fs-3"] "425-879-1509"
