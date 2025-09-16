@@ -92,6 +92,7 @@ executable wedding-website
     text,
     vector,
     warp,
+    wai-extra
 
   -- Directories containing source files.
   hs-source-dirs: app

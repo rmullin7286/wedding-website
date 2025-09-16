@@ -10,6 +10,7 @@ import Effectful.FileSystem (FileSystem)
 import Effectful.Servant (runWarpServerSettingsContext)
 import Lucid (Html)
 import Network.Wai.Handler.Warp (defaultSettings, setPort)
+import Network.Wai.Middleware.RequestLogger (logStdout)
 import Servant (Headers, ServerError, ServerT, err401, serveDirectoryWebApp, (:<|>) (..))
 import Servant.API (FormUrlEncoded, Get, Header, Post, Raw, ReqBody)
 import Servant.API qualified as S
@@ -69,7 +70,7 @@ server =
     :<|> serveDirectoryWebApp "static"
 
 runServerEff :: (AuthE :> es, DB :> es, IOE :> es, FileSystem :> es) => CookieSettings -> JWTSettings -> Eff es ()
-runServerEff cookieSettings jwtSettings = runWarpServerSettingsContext @(WeddingAPI '[Cookie]) settings ctx server id
+runServerEff cookieSettings jwtSettings = runWarpServerSettingsContext @(WeddingAPI '[Cookie]) settings ctx server logStdout
   where
     settings = defaultSettings & setPort 8080
     ctx = cookieSettings :. jwtSettings :. EmptyContext
