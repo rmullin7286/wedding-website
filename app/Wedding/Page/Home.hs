@@ -27,7 +27,7 @@ whenAndWhere = do
         div_ [class_ "col-md-6 text-center py-4"] $ do
           h2_ [class_ "h2 mb-4"] "When"
           p_ [class_ "mb-3 fs-3"] "Saturday, May 30th, 2026"
-          p_ [class_ "text-muted fs-5"] "Times will be updated as we get closer to the date"
+          p_ [class_ "text-muted fs-5"] "Schedule coming soon"
 
         -- Where Column
         div_ [class_ "col-md-6 text-center py-4"] $ do

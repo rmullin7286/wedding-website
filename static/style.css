@@ -214,3 +214,42 @@ h1, h2, h3, h4, h5, h6 {
 #contact .text-muted {
     color: var(--light-text-muted) !important; /* Override Bootstrap's muted color with light white */
 }
+
+/* RSVP Form Styling */
+.rsvp-form .btn {
+    background-color: var(--secondary-color); /* Wine red background */
+    border-color: var(--secondary-color); /* Wine red border */
+    color: white; /* White text */
+    font-weight: 600; /* Semi-bold button text */
+}
+
+.rsvp-form .btn:hover {
+    background-color: transparent; /* Transparent background on hover */
+    border-color: var(--secondary-color); /* Wine red border on hover */
+    color: var(--secondary-color); /* Wine red text on hover */
+}
+
+/* Guest Not Found Page Button Styling */
+.btn-primary {
+    background-color: var(--primary-color) !important; /* Periwinkle background */
+    border-color: var(--primary-color) !important; /* Periwinkle border */
+    color: white !important; /* White text */
+}
+
+.btn-primary:hover {
+    background-color: transparent !important; /* Transparent background on hover */
+    border-color: var(--primary-color) !important; /* Periwinkle border on hover */
+    color: var(--primary-color) !important; /* Periwinkle text on hover */
+}
+
+.btn-outline-secondary {
+    background-color: var(--secondary-color) !important; /* Wine red background */
+    border-color: var(--secondary-color) !important; /* Wine red border */
+    color: white !important; /* White text */
+}
+
+.btn-outline-secondary:hover {
+    background-color: transparent !important; /* Transparent background on hover */
+    border-color: var(--secondary-color) !important; /* Wine red border on hover */
+    color: var(--secondary-color) !important; /* Wine red text on hover */
+}
