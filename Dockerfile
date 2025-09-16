@@ -2,6 +2,14 @@ FROM haskell:9.6.7 AS build
 
 WORKDIR /app
 
+# Install system dependencies required by Haskell packages
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        pkg-config \
+        zlib1g-dev \
+        libssl-dev \
+    && rm -rf /var/lib/apt/lists/*
+
 COPY . .
 
 RUN cabal update
