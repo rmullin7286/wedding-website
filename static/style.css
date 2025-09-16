@@ -165,6 +165,7 @@ h1, h2, h3, h4, h5, h6 {
     background-color: var(--secondary-color); /* Wine red background */
 }
 
+#rsvp h1,
 #rsvp h2 {
     color: white; /* White heading for contrast */
 }
@@ -213,6 +214,46 @@ h1, h2, h3, h4, h5, h6 {
 
 #contact .text-muted {
     color: var(--light-text-muted) !important; /* Override Bootstrap's muted color with light white */
+}
+
+/* Contact table-like layout using CSS Grid */
+#contact .contact-table {
+    display: grid;
+    grid-template-columns: auto 1fr; /* First column auto-width, second column takes remaining space */
+    gap: 0.75rem 2rem; /* Row gap 0.75rem, column gap 2rem */
+    max-width: 500px; /* Limit max width for better appearance */
+    margin: 0 auto; /* Center the table */
+    align-items: center; /* Center items vertically within each row */
+}
+
+#contact .contact-row {
+    display: contents; /* Make the row div transparent to the grid */
+}
+
+#contact .contact-label {
+    color: white; /* White labels for contrast against periwinkle background */
+    font-weight: 600; /* Semi-bold for emphasis */
+    margin: 0; /* Remove default margins */
+    text-align: left; /* Left align labels in their column */
+}
+
+#contact .contact-link {
+    color: var(--light-text); /* Light text color matching other content */
+    text-decoration: none; /* Remove default underline */
+    transition: all 0.3s ease; /* Smooth hover transition */
+    padding: 0.5rem 1rem; /* Add padding for better touch targets */
+    border-radius: 6px; /* Rounded corners for modern look */
+    border: 2px solid transparent; /* Invisible border for hover effect */
+    text-align: left; /* Left align links in their column */
+    justify-self: start; /* Align to start of grid cell */
+}
+
+#contact .contact-link:hover {
+    color: white; /* Pure white text on hover */
+    background-color: var(--secondary-color); /* Wine red background on hover */
+    border-color: var(--secondary-color); /* Wine red border on hover */
+    text-decoration: none; /* Ensure no underline on hover */
+    transform: translateY(-2px); /* Slight upward movement for elegant effect */
 }
 
 /* RSVP Form Styling */

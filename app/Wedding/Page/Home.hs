@@ -42,7 +42,7 @@ rsvpSection = do
     div_ [class_ "container"] $ do
       div_ [class_ "row justify-content-center"] $ do
         div_ [class_ "col-lg-8 text-center py-4"] $ do
-          h2_ [class_ "h2 mb-4"] "Join Us"
+          h1_ [class_ "display-5 mb-4"] "Join Us"
           p_ [class_ "fs-4 mb-4"] "We hope you'll join us on this special day as we celebrate our love and begin our journey together."
           a_ [href_ "/rsvp", class_ "btn btn-lg px-5"] "RSVP"
 
@@ -55,13 +55,15 @@ contactSection = do
           h1_ [class_ "display-5 mb-4"] "Contact Us"
           p_ [class_ "lead"] "Feel free to reach out if you have any questions."
 
-      div_ [class_ "row g-5"] $ do
-        -- Email Column
-        div_ [class_ "col-md-6 text-center py-4"] $ do
-          h2_ [class_ "h2 mb-4"] "Email"
-          p_ [class_ "mb-3 fs-3"] "ryanandshaemullin@gmail.com"
+      div_ [class_ "row justify-content-center"] $ do
+        div_ [class_ "col-lg-6"] $ do
+          div_ [class_ "contact-table"] $ do
+            -- Email Entry
+            div_ [class_ "contact-row"] $ do
+              p_ [class_ "contact-label fs-4"] "Email"
+              a_ [href_ "mailto:ryanandshaemullin@gmail.com", class_ "contact-link fs-3"] "ryanandshaemullin@gmail.com"
 
-        -- Phone Column
-        div_ [class_ "col-md-6 text-center py-4"] $ do
-          h2_ [class_ "h2 mb-4"] "Phone"
-          p_ [class_ "mb-3 fs-3"] "425-879-1509"
+            -- Phone Entry
+            div_ [class_ "contact-row"] $ do
+              p_ [class_ "contact-label fs-4"] "Phone"
+              a_ [href_ "tel:+14258791509", class_ "contact-link fs-3"] "425-879-1509"
