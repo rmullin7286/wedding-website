@@ -53,24 +53,25 @@ jobs:
       - name: Export VERSION from metadata
         run: echo "VERSION=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.version'] }}" >> $GITHUB_ENV
 
-#      - name: SSH deploy
-#        uses: appleboy/ssh-action@v1.0.3
-#        env:
-#          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
-#          GHCR_USERNAME: ${{ github.repository_owner }}
-#        with:
-#          host: ${{ secrets.SSH_HOST }}
-#          username: ${{ secrets.SSH_USER }}
-#          key: ${{ secrets.SSH_PRIVATE_KEY }}
-#          port: ${{ secrets.SSH_PORT || 22 }}
-#          script_stop: true
-#          envs: DEPLOY_PATH,GHCR_USERNAME,GHCR_TOKEN
-#          script: |
-#            set -euo pipefail
-#            echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USERNAME" --password-stdin
-#            cd "$DEPLOY_PATH"
-#            docker compose pull || docker-compose pull
-#            docker compose up -d || docker-compose up -d
-#            docker image prune -af
+      - name: SSH deploy
+        uses: appleboy/ssh-action@v1.0.3
+        env:
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+          GHCR_USERNAME: ${{ github.repository_owner }}
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT || 22 }}
+          script_stop: true
+          envs: DEPLOY_PATH,GHCR_USERNAME,GHCR_TOKEN
+          script: |
+            set -euo pipefail
+            echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USERNAME" --password-stdin
+            cd "$DEPLOY_PATH"
+            docker compose pull || docker-compose pull
+            docker compose up -d || docker-compose up -d
+            docker image prune -af
 
 
