@@ -146,7 +146,6 @@ attendeeRSVPForm (Attendee attendeeId attendeeName _ _ currentDietary) = do
         div_ [class_ ""] $ do
           attendingOption attendeeId "Yes" Yes
           attendingOption attendeeId "No" No
-          attendingOption attendeeId "Maybe" Undecided
 
       -- Dietary restrictions
       div_ [class_ "mb-3"] $ do
