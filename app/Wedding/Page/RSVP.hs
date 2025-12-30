@@ -196,3 +196,5 @@ rsvpSuccessPage = basePage "RSVP Submitted" $ do
       h1_ [class_ "display-5 mb-4"] "Thank You!"
       p_ [class_ "lead mb-4"] "Your RSVP has been submitted successfully."
       p_ "We're looking forward to celebrating with you!"
+      div_ [class_ "mt-4"] $ do
+        a_ [href_ "/", class_ "btn btn-outline-secondary btn-lg px-5"] "Return to Home"
