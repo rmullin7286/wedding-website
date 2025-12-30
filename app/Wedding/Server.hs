@@ -4,6 +4,7 @@
 module Wedding.Server (runServerEff) where
 
 import Data.Function ((&))
+import Data.Text (Text)
 import Effectful (Eff, IOE, (:>))
 import Effectful.Error.Static (Error, throwError)
 import Effectful.FileSystem (FileSystem)
@@ -12,7 +13,7 @@ import Lucid (Html)
 import Network.Wai.Handler.Warp (defaultSettings, setPort)
 import Network.Wai.Middleware.RequestLogger (logStdout)
 import Servant (Headers, ServerError, ServerT, err401, serveDirectoryWebApp, (:<|>) (..))
-import Servant.API (FormUrlEncoded, Get, Header, Post, Raw, ReqBody)
+import Servant.API (Capture, FormUrlEncoded, Get, Header, PlainText, Post, Raw, ReqBody)
 import Servant.API qualified as S
 import Servant.Auth as SA
 import Servant.Auth.Server as SAS (AuthResult (..), CookieSettings, JWTSettings, SetCookie)
@@ -21,7 +22,7 @@ import Servant.Multipart (MultipartForm, Tmp)
 import Servant.Server.Internal.Context (Context (..))
 import Wedding.Auth (AuthE, LoginForm (..), User (..))
 import Wedding.DB (DB)
-import Wedding.Page.Admin (CsvUpload, adminDashboard, adminLogin, adminLoginHandler, csvUploadHandler)
+import Wedding.Page.Admin (CreateAttendeeForm, CsvUpload, EditAttendeeForm, adminDashboard, adminLogin, adminLoginHandler, createAttendeeHandler, csvUploadHandler, deleteAttendeeHandler, editAttendeeFormHandler, editAttendeePageHandler, exportCsvHandler)
 import Wedding.Page.Home (home)
 import Wedding.Page.RSVP (GroupRSVPFormData, RSVPFormData, rsvpGroupSubmission, rsvpNameSubmission, rsvpPage)
 
@@ -38,6 +39,11 @@ type PublicAPI auths =
 type ProtectedAPI =
   "admin" S.:> Get '[HTML] (Html ()) -- Admin dashboard
     :<|> "admin" S.:> "upload-csv" S.:> MultipartForm Tmp CsvUpload S.:> Post '[HTML] (Html ()) -- CSV upload
+    :<|> "admin" S.:> "delete" S.:> Capture "id" Int S.:> Post '[HTML] (Html ()) -- Delete attendee
+    :<|> "admin" S.:> "create-attendee" S.:> ReqBody '[FormUrlEncoded] CreateAttendeeForm S.:> Post '[HTML] (Html ()) -- Create attendee
+    :<|> "admin" S.:> "edit" S.:> Capture "id" Int S.:> Get '[HTML] (Html ()) -- Edit attendee page
+    :<|> "admin" S.:> "edit" S.:> Capture "id" Int S.:> ReqBody '[FormUrlEncoded] EditAttendeeForm S.:> Post '[HTML] (Html ()) -- Edit attendee form
+    :<|> "admin" S.:> "export-csv" S.:> Get '[PlainText] Text -- Export CSV
 
 -- | Complete API with authentication
 type WeddingAPI auths =
@@ -60,7 +66,12 @@ protectedServer :: (FileSystem :> es, DB :> es, Error ServerError :> es, IOE :> 
 protectedServer (Authenticated _user) =
   adminDashboard
     :<|> csvUploadHandler
-protectedServer _ = throwError err401 :<|> (\_ -> throwError err401)
+    :<|> deleteAttendeeHandler
+    :<|> createAttendeeHandler
+    :<|> editAttendeePageHandler
+    :<|> editAttendeeFormHandler
+    :<|> exportCsvHandler
+protectedServer _ = throwError err401 :<|> (\_ -> throwError err401) :<|> (\_ -> throwError err401) :<|> (\_ -> throwError err401) :<|> (\_ -> throwError err401) :<|> (\_ _ -> throwError err401) :<|> throwError err401
 
 -- | Complete server with authentication
 server :: (DB :> es, Error ServerError :> es, IOE :> es, AuthE :> es, FileSystem :> es) => ServerT (WeddingAPI '[Cookie]) (Eff es)

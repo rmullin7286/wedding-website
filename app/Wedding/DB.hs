@@ -7,11 +7,14 @@ module Wedding.DB
     Attendee (..),
     DB,
     getAttendeeByName,
+    getAttendeeById,
     updateAttendeeGroup,
     createAttendee,
     getAllAttendees,
     getAttendeesByGroup,
     updateAttendeeRSVP,
+    updateAttendee,
+    deleteAttendee,
     getAllGroupMembersOfAttendeeNamed,
     initializeDatabase,
     runDBIO,
@@ -56,22 +59,28 @@ data Attendee = Attendee
 
 data DB :: Effect where
   GetAttendeeByName :: Text -> DB m (Maybe Attendee)
+  GetAttendeeById :: Int -> DB m (Maybe Attendee)
   UpdateAttendeeGroup :: Int -> Maybe Text -> DB m ()
   CreateAttendee :: Text -> Maybe Text -> DB m ()
   GetAllAttendees :: DB m [Attendee]
   GetAttendeesByGroup :: Text -> DB m [Attendee]
   UpdateAttendeeRSVP :: Int -> AttendingStatus -> Maybe Text -> DB m ()
+  UpdateAttendee :: Attendee -> DB m ()
+  DeleteAttendee :: Int -> DB m ()
 
 makeEffect ''DB
 
 runDBIO :: (IOE :> es) => Connection -> Eff (DB : es) a -> Eff es a
 runDBIO conn action = interpretWith action $ \_ -> \case
   GetAttendeeByName name -> liftIO $ listToMaybe <$> query conn "SELECT * FROM attendees WHERE name=?" (Only name)
+  GetAttendeeById attendeeId -> liftIO $ listToMaybe <$> query conn "SELECT * FROM attendees WHERE id=?" (Only attendeeId)
   UpdateAttendeeGroup aid group -> liftIO $ execute conn "UPDATE attendees SET group_name = ? WHERE id = ?" (group, aid)
   CreateAttendee name group -> liftIO $ execute conn "INSERT INTO attendees(name, group_name, attending) VALUES(?, ?, ?)" (name, group, Undecided)
   GetAllAttendees -> liftIO $ query_ conn "SELECT * FROM attendees"
   GetAttendeesByGroup group -> liftIO $ query conn "SELECT * FROM attendees WHERE group_name = ?" $ Only group
   UpdateAttendeeRSVP attendeeId attending dietary -> liftIO $ execute conn "UPDATE attendees SET attending= ?, dietary_restrictions = ? WHERE id = ?" (attending, dietary, attendeeId)
+  UpdateAttendee (Attendee attendeeId name group attending dietary) -> liftIO $ execute conn "UPDATE attendees SET name = ?, group_name = ?, attending = ?, dietary_restrictions = ? WHERE id = ?" (name, group, attending, dietary, attendeeId)
+  DeleteAttendee attendeeId -> liftIO $ execute conn "DELETE FROM attendees WHERE id = ?" (Only attendeeId)
 
 initializeDatabase :: FilePath -> IO Connection
 initializeDatabase path = do
