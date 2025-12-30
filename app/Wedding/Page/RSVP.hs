@@ -123,7 +123,7 @@ groupRSVPPage attendees = basePage "RSVP for Your Group" $ do
           h1_ [class_ "display-5 mb-4 text-center"] "RSVP for Your Group"
           p_ [class_ "lead mb-5 text-center"] "Please fill out the RSVP information for everyone in your group."
 
-          form_ [method_ "POST", action_ "/rsvp/submit", class_ "rsvp-group-form"] $ do
+          form_ [method_ "POST", action_ "/rsvp/submit", class_ "rsvp-form"] $ do
             forM_ attendees $ \attendee -> do
               attendeeRSVPForm attendee
 
