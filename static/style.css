@@ -316,3 +316,61 @@ h1, h2, h3, h4, h5, h6 {
     border-color: var(--secondary-color) !important; /* Wine red border on hover */
     color: var(--secondary-color) !important; /* Wine red text on hover */
 }
+
+/* FAQ Card Styling */
+.faq-card {
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.faq-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+}
+
+.faq-card-primary {
+    background-color: var(--primary-color);
+    border-left: 5px solid rgba(255, 255, 255, 0.3);
+}
+
+.faq-card-secondary {
+    background-color: var(--secondary-color);
+    border-left: 5px solid rgba(255, 255, 255, 0.3);
+}
+
+.faq-card-neutral {
+    background-color: var(--neutral-color);
+    border-left: 5px solid rgba(255, 255, 255, 0.3);
+}
+
+.faq-question {
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    font-family: 'Playfair Display', serif;
+}
+
+.faq-answer {
+    color: var(--light-text);
+    font-size: 1.1rem;
+    margin-bottom: 0;
+    line-height: 1.6;
+}
+
+.faq-link {
+    color: var(--primary-color);
+    text-decoration: underline;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.faq-link:hover {
+    color: white;
+    text-decoration: none;
+}
