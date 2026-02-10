@@ -1,6 +1,6 @@
 module Wedding.Page.Home (home) where
 
-import Lucid (Html, a_, class_, div_, h1_, h2_, href_, id_, p_, section_, target_)
+import Lucid (Html, a_, alt_, class_, div_, h1_, h2_, height_, href_, id_, img_, p_, section_, src_, target_, width_)
 import Wedding.Component.BasePage (basePage)
 
 home :: Html ()
@@ -8,6 +8,7 @@ home = basePage "Home" $ do
   hero
   whenAndWhere
   rsvpSection
+  registrySection
   contactSection
 
 hero :: Html ()
@@ -27,7 +28,9 @@ whenAndWhere = do
         div_ [class_ "col-md-6 text-center py-4"] $ do
           h2_ [class_ "h2 mb-4"] "When"
           p_ [class_ "mb-3 fs-3"] "Saturday, May 30th, 2026"
-          p_ [class_ "text-muted fs-5"] "Schedule coming soon"
+          p_ [class_ "text-muted fs-5 mb-1"] "Guests arrive at 2:30 PM"
+          p_ [class_ "text-muted fs-5 mb-1"] "Ceremony starts promptly at 3 PM"
+          p_ [class_ "text-muted fs-5"] "Reception to follow"
 
         -- Where Column
         div_ [class_ "col-md-6 text-center py-4"] $ do
@@ -45,6 +48,18 @@ rsvpSection = do
           h1_ [class_ "display-5 mb-4"] "Join Us"
           p_ [class_ "fs-4 mb-4"] "We hope you'll join us on this special day as we celebrate our love and begin our journey together."
           a_ [href_ "/rsvp", class_ "btn btn-lg px-5"] "RSVP"
+
+registrySection :: Html ()
+registrySection = do
+  section_ [class_ "py-5", id_ "registry"] $ do
+    div_ [class_ "container"] $ do
+      div_ [class_ "row justify-content-center"] $ do
+        div_ [class_ "col-lg-8 text-center py-4"] $ do
+          h1_ [class_ "display-5 mb-4"] "Registry"
+          p_ [class_ "lead fs-4 mb-4"] "Your presence at our wedding is the greatest gift of all. If you wish to honor us with a gift, we have a registry at Honeyfund."
+          img_ [src_ "/static/image/registry-qr.png", alt_ "Registry QR Code", class_ "registry-qr mb-4", width_ "200", height_ "200"]
+          div_ [] $ do
+            a_ [href_ "https://www.honeyfund.com/site/mullin-huot-05-30-2026", target_ "_blank", class_ "btn btn-lg px-5"] "View Registry"
 
 contactSection :: Html ()
 contactSection = do

@@ -187,6 +187,44 @@ h1, h2, h3, h4, h5, h6 {
     color: white; /* White text on hover */
 }
 
+/* Registry Section - Sage background with light text */
+#registry {
+    background-color: var(--neutral-color);
+}
+
+#registry h1 {
+    color: white;
+}
+
+#registry p {
+    color: var(--light-text);
+}
+
+#registry .lead {
+    color: var(--light-text);
+}
+
+#registry img.registry-qr {
+    display: block;
+    margin: 0 auto;
+    max-width: 200px;
+    height: auto;
+    border-radius: 12px;
+}
+
+#registry .btn {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+    font-weight: 600;
+}
+
+#registry .btn:hover {
+    background-color: transparent;
+    border-color: white;
+    color: white;
+}
+
 /* Contact Section - Periwinkle background with light text */
 #contact {
     background-color: var(--primary-color); /* Periwinkle background */
