@@ -13,7 +13,7 @@ faq = basePage "FAQ" $ do
       div_ [class_ "row g-4"] $ do
         faqCard "primary" "Dress Code" "Our dress code is semi-formal!"
 
-        faqCard "secondary" "What time should I arrive?" "The ceremony will start at 3PM. Guests should to arrive at 2:30 PM."
+        faqCard "secondary" "What time should I arrive?" "The ceremony will start at 3PM. Guests should arrive at 2:30 PM."
 
         faqCard "neutral" "Parking Information" "Parking is available on site. Parking attendants will be directing traffic as guests arrive. Try to carpool if possible. The venue is near Redmond proper, so Ubers or taxis will likely be available."
 
