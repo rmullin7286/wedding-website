@@ -2,13 +2,15 @@
 
 module Wedding.Component.BasePage (basePage) where
 
+import Data.Maybe (fromMaybe)
 import Data.Text (pack)
-import GitHash (giHash, tGitInfoCwd)
+import Language.Haskell.TH.Syntax (lift, runIO)
 import Lucid (Html, With (with), body_, charset_, content_, crossorigin_, doctype_, head_, href_, html_, integrity_, lang_, link_, meta_, name_, rel_, script_, src_, title_)
+import System.Environment (lookupEnv)
 import Wedding.Component.NavBar (navBar)
 
 cssVersion :: String
-cssVersion = giHash $$tGitInfoCwd
+cssVersion = $(runIO (fromMaybe "unknown" <$> lookupEnv "GIT_HASH") >>= lift)
 
 basePage :: Html () -> Html () -> Html ()
 basePage title content = do

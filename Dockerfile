@@ -1,5 +1,7 @@
 FROM haskell:9.6.7 AS build
 
+ARG GIT_HASH=unknown
+
 WORKDIR /app
 
 # Install system dependencies required by Haskell packages
@@ -14,7 +16,7 @@ COPY . .
 
 RUN cabal update
 
-RUN cabal install "exe:wedding-website" \
+RUN GIT_HASH=${GIT_HASH} cabal install "exe:wedding-website" \
    --installdir=/bin \
    --install-method=copy \
    --overwrite-policy=always \

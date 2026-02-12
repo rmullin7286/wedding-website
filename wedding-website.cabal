@@ -93,7 +93,7 @@ executable wedding-website
     text,
     vector,
     warp,
-    githash,
+    template-haskell,
     wai-extra
 
   -- Directories containing source files.
