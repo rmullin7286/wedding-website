@@ -93,6 +93,7 @@ executable wedding-website
     text,
     vector,
     warp,
+    githash,
     wai-extra
 
   -- Directories containing source files.
