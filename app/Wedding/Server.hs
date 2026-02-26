@@ -25,12 +25,14 @@ import Wedding.DB (DB)
 import Wedding.Page.Admin (CreateAttendeeForm, CsvUpload, EditAttendeeForm, adminDashboard, adminLogin, adminLoginHandler, createAttendeeHandler, csvUploadHandler, deleteAttendeeHandler, editAttendeeFormHandler, editAttendeePageHandler, exportCsvHandler)
 import Wedding.Page.FAQ (faq)
 import Wedding.Page.Home (home)
+import Wedding.Page.OurStory (ourStory)
 import Wedding.Page.RSVP (GroupRSVPFormData, RSVPFormData, rsvpGroupSubmission, rsvpNameSubmission, rsvpPage)
 
 -- | Public API - no authentication required
 type PublicAPI auths =
   Get '[HTML] (Html ()) -- Home page
     :<|> "faq" S.:> Get '[HTML] (Html ()) -- FAQ page
+    :<|> "our-story" S.:> Get '[HTML] (Html ()) -- Our Story page
     :<|> "rsvp" S.:> Get '[HTML] (Html ()) -- RSVP page
     :<|> "rsvp" S.:> ReqBody '[FormUrlEncoded] Wedding.Page.RSVP.RSVPFormData S.:> Post '[HTML] (Html ()) -- RSVP name submission -> group form
     :<|> "rsvp" S.:> "submit" S.:> ReqBody '[FormUrlEncoded] Wedding.Page.RSVP.GroupRSVPFormData S.:> Post '[HTML] (Html ()) -- Final RSVP submission
@@ -58,6 +60,7 @@ publicServer :: (AuthE :> es, DB :> es, Error ServerError :> es, IOE :> es) => S
 publicServer =
   return home
     :<|> return faq
+    :<|> return ourStory
     :<|> return Wedding.Page.RSVP.rsvpPage
     :<|> Wedding.Page.RSVP.rsvpNameSubmission
     :<|> Wedding.Page.RSVP.rsvpGroupSubmission

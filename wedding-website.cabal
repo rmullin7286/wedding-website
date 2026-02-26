@@ -58,6 +58,7 @@ executable wedding-website
     Wedding.Page.Admin
     Wedding.Page.FAQ
     Wedding.Page.Home
+    Wedding.Page.OurStory
     Wedding.Page.RSVP
     Wedding.Server
 
