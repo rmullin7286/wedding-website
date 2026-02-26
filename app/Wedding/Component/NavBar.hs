@@ -20,6 +20,8 @@ navBar = nav_ [class_ "navbar navbar-expand-lg navbar-light wedding-navbar"] $ d
         li_ [class_ "nav-item"] $ do
           a_ [class_ "nav-link", href_ "/"] "Home"
         li_ [class_ "nav-item"] $ do
+          a_ [class_ "nav-link", href_ "/our-story"] "Our Story"
+        li_ [class_ "nav-item"] $ do
           a_ [class_ "nav-link", href_ "/#when-where"] "When & Where"
         li_ [class_ "nav-item"] $ do
           a_ [class_ "nav-link", href_ "/faq"] "FAQ"

@@ -412,3 +412,179 @@ h1, h2, h3, h4, h5, h6 {
     color: white;
     text-decoration: none;
 }
+
+/* ============================
+   Our Story Page - Movie Theme
+   ============================ */
+
+/* Poster + Synopsis Section */
+.our-story-poster-section {
+    background-color: #1a1a2e;
+}
+
+.our-story-poster {
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+}
+
+.our-story-studio {
+    font-family: 'Crimson Text', serif;
+    font-size: 1.3rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 1rem;
+}
+
+.our-story-title {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    color: white;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    margin-bottom: 1rem;
+}
+
+.our-story-stars {
+    font-size: 2rem;
+    color: gold;
+    letter-spacing: 0.2em;
+}
+
+.our-story-section-heading {
+    color: white;
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+}
+
+.our-story-blurb {
+    color: var(--light-text);
+    font-size: 1.15rem;
+    line-height: 1.8;
+    text-align: left;
+}
+
+/* Ladder Row Backgrounds */
+.our-story-bg-primary {
+    background-color: var(--primary-color);
+}
+
+.our-story-bg-secondary {
+    background-color: var(--secondary-color);
+}
+
+.our-story-bg-neutral {
+    background-color: var(--neutral-color);
+}
+
+/* Photo Styling */
+.our-story-photo {
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.our-story-photo:hover {
+    transform: scale(1.03);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+}
+
+.our-story-photo img {
+    width: 100%;
+    aspect-ratio: 4/3;
+    object-fit: cover;
+    display: block;
+}
+
+.our-story-photo-bottom img {
+    object-position: center bottom;
+}
+
+.our-story-photo-contain {
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.our-story-photo-contain:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+.our-story-photo-contain img {
+    object-fit: contain;
+}
+
+/* Review Card Styling */
+.our-story-review-card {
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.our-story-review-stars {
+    font-size: 2rem;
+    color: gold;
+    letter-spacing: 0.15em;
+    margin-bottom: 1rem;
+}
+
+.our-story-review-quote {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 2rem;
+    color: white;
+    margin-bottom: 1rem;
+    line-height: 1.4;
+}
+
+.our-story-review-critic {
+    font-family: 'Crimson Text', serif;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1.2rem;
+    margin-bottom: 0;
+}
+
+/* Closing Section */
+.our-story-closing {
+    background-color: #1a1a2e;
+}
+
+.our-story-closing-text {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1.8rem;
+    color: rgba(255, 255, 255, 0.8);
+    letter-spacing: 0.1em;
+}
+
+/* Our Story Mobile Responsive */
+@media (max-width: 768px) {
+    .our-story-title {
+        font-size: 2.5rem;
+    }
+
+    .our-story-studio {
+        font-size: 1rem;
+        letter-spacing: 0.2em;
+    }
+
+    .our-story-poster {
+        max-width: 300px;
+        margin: 0 auto 2rem;
+    }
+
+    .our-story-blurb {
+        text-align: center;
+    }
+
+    .our-story-photo img {
+        aspect-ratio: 3/2;
+    }
+
+    .our-story-review-quote {
+        font-size: 1.5rem;
+    }
+
+    .our-story-closing-text {
+        font-size: 1.4rem;
+    }
+}
