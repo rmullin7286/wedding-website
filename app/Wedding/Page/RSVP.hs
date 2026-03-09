@@ -54,7 +54,6 @@ rsvpLanding = do
           -- RSVP Form
           form_ [method_ "POST", action_ "/rsvp", class_ "rsvp-form"] $ do
             div_ [class_ "mb-4"] $ do
-              label_ [for_ "guestName", class_ "form-label fs-5"] "Full Name"
               input_ [type_ "text", class_ "form-control form-control-lg", id_ "guestName", name_ "guestName", placeholder_ "Enter your full name", required_ ""]
 
             button_ [type_ "submit", class_ "btn btn-lg px-5"] "Continue"
