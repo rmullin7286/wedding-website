@@ -49,7 +49,7 @@ rsvpLanding = do
       div_ [class_ "row justify-content-center"] $ do
         div_ [class_ "col-lg-6 col-md-8 text-center"] $ do
           h1_ [class_ "display-4 mb-4"] "Please RSVP"
-          p_ [class_ "lead mb-4"] "We're so excited to celebrate with you! Please enter your name below to get started."
+          p_ [class_ "lead mb-4"] "We're so excited to celebrate with you! Please enter your first and last name below to get started (e.g., Jane Smith)."
 
           -- RSVP Form
           form_ [method_ "POST", action_ "/rsvp", class_ "rsvp-form"] $ do

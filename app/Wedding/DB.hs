@@ -72,7 +72,7 @@ makeEffect ''DB
 
 runDBIO :: (IOE :> es) => Connection -> Eff (DB : es) a -> Eff es a
 runDBIO conn action = interpretWith action $ \_ -> \case
-  GetAttendeeByName name -> liftIO $ listToMaybe <$> query conn "SELECT * FROM attendees WHERE name=?" (Only name)
+  GetAttendeeByName name -> liftIO $ listToMaybe <$> query conn "SELECT * FROM attendees WHERE LOWER(name)=LOWER(?)" (Only name)
   GetAttendeeById attendeeId -> liftIO $ listToMaybe <$> query conn "SELECT * FROM attendees WHERE id=?" (Only attendeeId)
   UpdateAttendeeGroup aid group -> liftIO $ execute conn "UPDATE attendees SET group_name = ? WHERE id = ?" (group, aid)
   CreateAttendee name group -> liftIO $ execute conn "INSERT INTO attendees(name, group_name, attending) VALUES(?, ?, ?)" (name, group, Undecided)
