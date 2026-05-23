@@ -29,3 +29,5 @@ navBar = nav_ [class_ "navbar navbar-expand-lg navbar-light wedding-navbar"] $ d
           a_ [class_ "nav-link", href_ "/#contact"] "Contact"
         li_ [class_ "nav-item"] $ do
           a_ [class_ "nav-link", href_ "/rsvp"] "RSVP"
+        li_ [class_ "nav-item"] $ do
+          a_ [class_ "nav-link", href_ "/#registry"] "Registry"
