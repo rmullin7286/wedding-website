@@ -1,6 +1,6 @@
 module Wedding.Component.NavBar (navBar) where
 
-import Lucid (Html, a_, button_, class_, div_, href_, id_, li_, nav_, span_, type_, ul_)
+import Lucid (Html, a_, button_, class_, div_, href_, id_, li_, nav_, span_, target_, type_, ul_)
 import Wedding.Html.Attributes (ariaControls_, ariaExpanded_, ariaLabel_, dataBsTarget_, dataBsToggle_)
 
 navBar :: Html ()
@@ -21,6 +21,8 @@ navBar = nav_ [class_ "navbar navbar-expand-lg navbar-light wedding-navbar"] $ d
           a_ [class_ "nav-link", href_ "/"] "Home"
         li_ [class_ "nav-item"] $ do
           a_ [class_ "nav-link", href_ "/our-story"] "Our Story"
+        li_ [class_ "nav-item"] $ do
+          a_ [class_ "nav-link", href_ "https://photos.app.goo.gl/bDuL1SGm7v45sX7q6", target_ "_blank"] "Photos"
         li_ [class_ "nav-item"] $ do
           a_ [class_ "nav-link", href_ "/#when-where"] "When & Where"
         li_ [class_ "nav-item"] $ do

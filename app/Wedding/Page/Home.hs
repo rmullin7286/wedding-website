@@ -6,6 +6,7 @@ import Wedding.Component.BasePage (basePage)
 home :: Html ()
 home = basePage "Home" $ do
   hero
+  photosSection
   whenAndWhere
   rsvpSection
   registrySection
@@ -18,6 +19,16 @@ hero = do
       h1_ [class_ "display-1 fw-bold"] "Ryan & Shae"
       p_ [class_ "lead display-6 mb-4"] "May 30, 2026"
       p_ [class_ "lead"] "Join us for our wedding"
+
+photosSection :: Html ()
+photosSection = do
+  section_ [class_ "py-5", id_ "photos"] $ do
+    div_ [class_ "container"] $ do
+      div_ [class_ "row justify-content-center"] $ do
+        div_ [class_ "col-lg-8 text-center py-4"] $ do
+          h1_ [class_ "display-5 mb-4"] "Wedding Photos"
+          p_ [class_ "fs-4 mb-4"] "Thank you for celebrating with us! Browse and download photos from our special day."
+          a_ [href_ "https://photos.app.goo.gl/bDuL1SGm7v45sX7q6", target_ "_blank", class_ "btn btn-lg px-5"] "View Photos"
 
 whenAndWhere :: Html ()
 whenAndWhere = do
